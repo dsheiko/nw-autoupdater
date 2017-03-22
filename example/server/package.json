@@ -6,19 +6,15 @@
   "packages": {
     "linux64": {
       "url": "http://localhost:8080/releases/nw-autoupdater-demo-linux-x64.zip",
-      "size": 102680557
+      "size": 98411707
     },
     "mac64": {
       "url": "http://localhost:8080/releases/nw-autoupdater-demo-osx-x64.zip",
-      "size": 103483581
-    },
-    "win32": {
-      "url": "http://localhost:8080/releases/nw-autoupdater-demo-win-ia32.zip",
-      "size": 91101967
+      "size": 98122673
     },
     "win64": {
       "url": "http://localhost:8080/releases/nw-autoupdater-demo-win-x64.zip",
-      "size": 101163798
+      "size": 96915642
     }
   },
   "scripts": {

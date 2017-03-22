@@ -1,5 +1,6 @@
 const { join } = require( "path" ),
       fs = require( "fs" ),
+      os = require( "os" ),
       { spawn } = require( "child_process" ),
       { ncp } = require( "ncp" ),
       rimraf = require( "rimraf" );
@@ -43,10 +44,10 @@ async function launch( runnerPath, argv, cwd ){
    return new Promise(( resolve, reject ) => {
       const logPath = join( cwd, "swap.log" ),
             err = fs.openSync( logPath, "a" ),
+            tpmUserData = join( os.tmpdir(), "nw-autoupdate-user-data" ),
 
 
-      child = spawn( runnerPath,
-         argv, {
+      child = spawn( runnerPath, [ ...argv, `--user-data-dir=${tpmUserData}` ], {
          timeout: 4000,
          detached: true,
          cwd

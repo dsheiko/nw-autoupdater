@@ -24,7 +24,7 @@ class AutoUpdater extends EventEmitter {
     if ( !this.manifest.manifestUrl ) {
       throw new Error( `Manifest must contain manifestUrl field` );
     }
-    this.updatePath = join( os.tmpdir(), "/nw-autoupdate" );
+    this.updatePath = join( os.tmpdir(), "nw-autoupdate" );
     this.release = "";
     this.argv = nw.App.argv;
     this.remoteManifest = "";
@@ -144,8 +144,9 @@ class AutoUpdater extends EventEmitter {
   async restart(){
     const argv = nw.App.argv.filter( arg => !arg.startsWith( "--swap=" ) );
     return Promise.resolve(argv);
-    return await launch( join( this.homeDir, this.runner ),
+    await launch( join( this.homeDir, this.runner ),
       nw.App.argv, homeDir );
+    nw.App.quit();
   }
 }
 

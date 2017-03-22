@@ -17,7 +17,6 @@
           if ( updater.isSwapRequest() ) {
             await updater.swap();
             await updater.restart();
-            nw.App.quit();
             return;
           }
           // Subscribe for progress events
