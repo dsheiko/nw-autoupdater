@@ -45,8 +45,8 @@ new AutoUpdate( manifest, options );
 **Params**
 - `manifest` - e.g. `require( "./package.json" )`
 - `options.executable` - (OPTIONAL) executable if it doesn't match project name
-- `options.backupPath` - (OPTIONAL) directory to backup. By default it's <project_name>.bak next to app directory
-
+- `options.backupDir` - (OPTIONAL) directory to backup. By default it's <project_name>.bak next to app directory
+- `options.homeDir` - (OPTIONAL) app directory
 
 ### readRemoteManifest
 Reads package.json of the release server

@@ -19,17 +19,22 @@ class AutoUpdater extends EventEmitter {
    * @param {Object} manifest
    * @param {Object} executable
    */
-  constructor( manifest, { executable, backupPath } = { executable: null, backupPath: null } ){
+  constructor( manifest, { executable, backupDir, homeDir } = {
+      executable: null,
+      backupDir: null,
+      homeDir: HOME_DIR
+    }){
     super();
     this.manifest = manifest;
     if ( !this.manifest.manifestUrl ) {
       throw new Error( `Manifest must contain manifestUrl field` );
     }
     this.updatePath = join( os.tmpdir(), "nw-autoupdate" );
-    this.backupPath = backupPath;
     this.release = "";
     this.argv = nw.App.argv;
     this.remoteManifest = "";
+    this.homeDir = homeDir;
+    this.backupDir = backupDir || this.homeDir + ".bak";
     this.platform = AutoUpdater.getPlatform();
     this.runner = executable || ( IS_OSX ? `${manifest.name}.app` : manifest.name );
   }
@@ -125,10 +130,10 @@ class AutoUpdater extends EventEmitter {
           tpmUserData = join( nw.App.dataPath, "swap" ),
           args = [ ...this.argv, `--user-data-dir=${tpmUserData}`, `--app-data-path=${nw.App.dataPath}` ];
     if ( IS_OSX ) {
-      await launch( "open", [ "-a", program, ...args, `--swap=${HOME_DIR}` ]
-        .map( AutoUpdater.escapeMacOS ), HOME_DIR );
+      await launch( "open", [ "-a", program, "--args", ...args, `--swap=${this.homeDir}` ]
+        .map( AutoUpdater.escapeMacOS ), this.homeDir );
     } else {
-      await launch( program, [ ...args, `--swap=${HOME_DIR}` ], HOME_DIR );
+      await launch( program, [ ...args, `--swap=${this.homeDir}` ], this.homeDir );
     }
     nw.App.quit();
   }
@@ -148,10 +153,10 @@ class AutoUpdater extends EventEmitter {
    * Do swap
    */
   async swap(){
-    return await swap( this.homeDir, HOME_DIR, this.backupPath || this.homeDir + ".bak" );
+    return await swap( this.homeDir, this.homeDir, this.backupDir );
   }
   /**
-   * Restart after swap
+   * REstart after swap
    * @returns {Promise}
    */
   async restart(){
@@ -163,7 +168,7 @@ class AutoUpdater extends EventEmitter {
           program = join( this.homeDir, this.runner );
 
     if ( IS_OSX ) {
-      await launch( "open", [ "-a", program, ...argv, `--user-data-dir=${appDataPath}` ]
+      await launch( "open", [ "-a", program, "--args", ...argv, `--user-data-dir=${appDataPath}` ]
         .map( AutoUpdater.escapeMacOS ), this.homeDir );
     } else {
       await launch( program, [ ...argv, `--user-data-dir=${appDataPath}` ], this.homeDir );
