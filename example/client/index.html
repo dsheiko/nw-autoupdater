@@ -16,13 +16,15 @@
         try {
           // Update copy is running to replace app with the update
           if ( updater.isSwapRequest() ) {
+            output.innerHTML = `Swapping...`;
             await updater.swap();
+            output.innerHTML = `Done...`;
             await updater.restart();
             return;
           }
           // Subscribe for progress events
           updater.on( "download", ( downloadSize, totalSize ) => {
-            output.innerHTML = `Downloading...\n`;
+            output.innerHTML = `Downloading...`;
             console.log( "download progress", Math.floor( downloadSize / totalSize * 100 ), "%" );
           });
           updater.on( "install", ( installFiles, totalFiles ) => {
@@ -45,9 +47,10 @@
           console.error( e );
         }
       }
-      main();
 
       output.innerHTML = `Application ver. ${nw.App.manifest.version}\n`;
+
+      main();
 
     </script>
   </body>

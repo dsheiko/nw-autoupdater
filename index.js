@@ -1,7 +1,7 @@
 const EventEmitter = require( "events" ),
       semver = require( "semver" ),
       os = require( "os" ),
-      { join, basename } = require( "path" ),
+      { join, basename, dirname } = require( "path" ),
       unpackTarGz = require( "./Lib/unpackTarGz" ),
       unpackZip = require( "./Lib/unpackZip" ),
       debounce = require( "debounce" ),
@@ -10,7 +10,8 @@ const EventEmitter = require( "events" ),
       ERR_INVALID_REMOTE_MANIFEST = "Invalid manifest structure",
       DEBOUNCE_TIME = 500,
       IS_OSX = /^darwin/.test( process.platform ),
-      IS_WIN = /^win/.test( process.platform );
+      IS_WIN = /^win/.test( process.platform ),
+      HOME_DIR = dirname( process.execPath );
 
 class AutoUpdater extends EventEmitter {
   /**
@@ -114,9 +115,12 @@ class AutoUpdater extends EventEmitter {
    * @returns {Promise}
    */
   async restartToSwap(){
-    const homeDir = process.cwd();
-    await launch( join( this.updatePath, this.runner ),
-      [ ...nw.App.argv, `--swap=${homeDir}` ], homeDir );
+    const program = join( this.updatePath, this.runner );
+    if ( IS_OSX ) {
+      await launch( "open", [ "-a", program, ...nw.App.argv, `--swap=${HOME_DIR}` ], HOME_DIR );
+    } else {
+      await launch( program, [ ...nw.App.argv, `--swap=${HOME_DIR}` ], HOME_DIR );
+    }
     nw.App.quit();
   }
   /**
@@ -135,17 +139,20 @@ class AutoUpdater extends EventEmitter {
    * Do swap
    */
   async swap(){
-    return await swap( this.homeDir, process.cwd(), this.runner );
+    return await swap( this.homeDir, HOME_DIR, this.runner );
   }
   /**
    * REstart after swap
    * @returns {Promise}
    */
   async restart(){
-    const argv = nw.App.argv.filter( arg => !arg.startsWith( "--swap=" ) );
-    return Promise.resolve(argv);
-    await launch( join( this.homeDir, this.runner ),
-      nw.App.argv, homeDir );
+    const argv = nw.App.argv.filter( arg => !arg.startsWith( "--swap=" ) && !arg.startsWith( "--user-data-dir=" ) ),
+          program = join( this.homeDir, this.runner );
+    if ( IS_OSX ) {
+      await launch( "open", [ "-a", program, ...nw.App.argv ], this.homeDir );
+    } else {
+      await launch( program, nw.App.argv, this.homeDir );
+    }
     nw.App.quit();
   }
 }

@@ -2,7 +2,7 @@
   "name": "nw-autoupdater",
   "description": "NW.js autoupdate library",
   "keywords": [],
-  "version": "0.0.4",
+  "version": "0.0.5",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -16,6 +16,7 @@
     "decompress-targz": "^4.0.0",
     "decompress-zip": "^0.3.0",
     "ncp": "^2.0.0",
+    "recursive-copy": "^2.0.6",
     "rimraf": "^2.6.1",
     "semver": "^5.3.0"
   }

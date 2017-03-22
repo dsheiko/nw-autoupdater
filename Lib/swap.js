@@ -1,39 +1,56 @@
-const { join } = require( "path" ),
+const { join, dirname } = require( "path" ),
       fs = require( "fs" ),
       os = require( "os" ),
       { spawn } = require( "child_process" ),
-      { ncp } = require( "ncp" ),
-      rimraf = require( "rimraf" ),
+      copy = require('recursive-copy'),
       LOG_PATH = join( nw.App.dataPath, "swap.log" );
+
+
+async function rm( dir ) {
+  return new Promise(( resolve ) => {
+    rimraf( dir, ( err ) => {
+      resolve( err ? false : true );
+    });
+  });
+}
+
+async function mv( from, to, log ) {
+  return new Promise(( resolve ) => {
+    fs.rename( from, to, ( e ) => {
+      if ( e ) {
+        fs.writeSync( log, [ "ERROR:", e, "\r\n" ].join( " " ), "utf-8" );
+        return reject( e );
+      }
+      resolve();
+    });
+  });
+}
+
+async function cp( from, to, log ) {
+   return new Promise(( resolve ) => {
+    ncp( from, to, ( e ) => {
+      if ( e ) {
+        fs.writeSync( log, [ "ERROR:", e, "\r\n" ].join( " " ), "utf-8" );
+        return reject( e );
+      }
+      resolve();
+    });
+  });
+}
 
 /**
  * Swap update and original directories
- * @param {string} homeDir
- * @param {string} updateDir
+ * @param {string} origHomeDir
+ * @param {string} selfDir
  * @param {string} runner
  * @returns {Promise}
  */
-async function swap( homeDir, updateDir, runner ){
-  const backup = homeDir + ".old",
+async function swap( origHomeDir, selfDir, runner ){
+  const backup = origHomeDir + ".old",
         err = fs.openSync( LOG_PATH, "a" );
-  return new Promise(( resolve, reject ) => {
-    fs.rmdir( backup, () => {
-      // may not exist
-      fs.rename( homeDir, backup, ( e ) => {
-        if ( e ) {
-          fs.writeSync( err, [ "ERROR:", e, "\r\n" ].join( " " ), "utf-8" );
-          return reject( e );
-        }
-        ncp( updateDir, homeDir, ( e ) => {
-          if ( e ) {
-            fs.writeSync( err, [ "ERROR:", e, "\r\n" ].join( " " ), "utf-8" );
-            return reject( e );
-          }
-          resolve();
-        });
-      });
-    });
-  });
+
+  await copy( origHomeDir, backup, { overwrite: true } );
+  await copy( selfDir, origHomeDir, { overwrite: true } );
 }
 /**
  * Launch detached process
