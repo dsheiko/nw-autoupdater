@@ -3,7 +3,8 @@ const { join } = require( "path" ),
       os = require( "os" ),
       { spawn } = require( "child_process" ),
       { ncp } = require( "ncp" ),
-      rimraf = require( "rimraf" );
+      rimraf = require( "rimraf" ),
+      LOG_PATH = join( nw.App.dataPath, "swap.log" );
 
 /**
  * Swap update and original directories
@@ -13,7 +14,8 @@ const { join } = require( "path" ),
  * @returns {Promise}
  */
 async function swap( homeDir, updateDir, runner ){
-  const backup = homeDir + ".old";
+  const backup = homeDir + ".old",
+        err = fs.openSync( LOG_PATH, "a" );
   return new Promise(( resolve, reject ) => {
     fs.rmdir( backup, ( err ) => {
       if ( err ) {
@@ -42,10 +44,8 @@ async function swap( homeDir, updateDir, runner ){
  */
 async function launch( runnerPath, argv, cwd ){
    return new Promise(( resolve, reject ) => {
-      const logPath = join( cwd, "swap.log" ),
-            err = fs.openSync( logPath, "a" ),
+      const err = fs.openSync( LOG_PATH, "a" ),
             tpmUserData = join( os.tmpdir(), "nw-autoupdate-user-data" ),
-
 
       child = spawn( runnerPath, [ ...argv, `--user-data-dir=${tpmUserData}` ], {
          timeout: 4000,

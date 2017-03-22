@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
   <body>
-    <output id="output">..</output>
+    <div id="output">..</div>
+    <label id="label"></label>
+    <progress id="progress" value="0" max="100"></progress>
     <script>
       const AutoUpdater = require( "nw-autoupdater" ),
             updater = new AutoUpdater( require( "./package.json" ) );
@@ -21,15 +23,25 @@
           }
           // Subscribe for progress events
           updater.on( "download", ( downloadSize, totalSize ) => {
-            console.log( "download progress", Math.floor( downloadSize / totalSize * 100 ), "%" );
+            const percent = Math.floor( downloadSize / totalSize * 100 );
+            console.log( `download progress ${percent} %` );
+            document.getElementById( "label" ).innerHTML = "Downloading...";
+            document.getElementById( "progress" ).value = percent;
           });
           updater.on( "install", ( installFiles, totalFiles ) => {
-            console.log( "install progress", Math.floor( installFiles / totalFiles * 100 ), "%" );
+            const percent = Math.floor( installFiles / totalFiles * 100 );
+            console.log( `install progress ${percent} %` );
+            document.getElementById( "label" ).innerHTML = "Installing...";
+            document.getElementById( "progress" ).value = percent;
           });
+
           // Download/unpack update if any available
           const rManifest = await updater.readRemoteManifest();
           const needsUpdate = await updater.checkNewVersion( rManifest );
           if ( !needsUpdate ) {
+            return;
+          }
+          if ( !confirm( "New release is available. do you want to upgrade?" ) ) {
             return;
           }
           const updateFile = await updater.download( rManifest );
