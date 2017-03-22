@@ -118,11 +118,11 @@ class AutoUpdater extends EventEmitter {
   async restartToSwap(){
     const program = join( this.updatePath, this.runner ),
           tpmUserData = join( nw.App.dataPath, "swap" ),
-          args = [ ...this.argv, `--user-data-dir=${tpmUserData}`, `--app-data-path=${nw.App.dataPath}` ];
+          args = [ ...this.argv, `--user-data-dir="${tpmUserData}"`, `--app-data-path="${nw.App.dataPath}"` ];
     if ( IS_OSX ) {
-      await launch( "open", [ "-a", program, ...args, `--swap=${HOME_DIR}` ], HOME_DIR );
+      await launch( "open", [ "-a", program, ...args, `--swap="${HOME_DIR}"` ], HOME_DIR );
     } else {
-      await launch( program, [ ...args, `--swap=${HOME_DIR}` ], HOME_DIR );
+      await launch( program, [ ...args, `--swap="${HOME_DIR}"` ], HOME_DIR );
     }
     nw.App.quit();
   }
@@ -157,9 +157,9 @@ class AutoUpdater extends EventEmitter {
           program = join( this.homeDir, this.runner );
 
     if ( IS_OSX ) {
-      await launch( "open", [ "-a", program, ...argv, `--user-data-dir=${appDataPath}` ], this.homeDir );
+      await launch( "open", [ "-a", program, ...argv, `--user-data-dir="${appDataPath}"` ], this.homeDir );
     } else {
-      await launch( program, [ ...argv, `--user-data-dir=${appDataPath}` ], this.homeDir );
+      await launch( program, [ ...argv, `--user-data-dir="${appDataPath}"` ], this.homeDir );
     }
     nw.App.quit();
   }

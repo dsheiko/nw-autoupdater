@@ -1,6 +1,6 @@
 {
   "name": "release-server",
-  "version": "1.0.31",
+  "version": "1.0.35",
   "description": "",
   "main": "index.js",
   "packages": {
