@@ -6,17 +6,16 @@
   "scripts": {
     "start": "nw .",
     "postversion": "npm run package",
-    "package": "nwb nwbuild -v 0.21.3-sdk . -o ../server/releases -p linux64 --output-format=ZIP"
+    "package": "nwb nwbuild -v 0.21.3-sdk . -o ../server/releases -p linux64,win64,osx64 --output-format=ZIP"
   },
   "manifestUrl": "http://127.0.0.1:8080/package.json",
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "nw": "sdk",
     "nwjs-builder": "^1.14.0"
   },
   "dependencies": {
-    "nw-autoupdater": "0.0.1"
+    "nw-autoupdater": "*"
   }
 }
