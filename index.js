@@ -19,13 +19,14 @@ class AutoUpdater extends EventEmitter {
    * @param {Object} manifest
    * @param {Object} executable
    */
-  constructor( manifest, { executable } = { executable: null } ){
+  constructor( manifest, { executable, backupPath } = { executable: null, backupPath: null } ){
     super();
     this.manifest = manifest;
     if ( !this.manifest.manifestUrl ) {
       throw new Error( `Manifest must contain manifestUrl field` );
     }
     this.updatePath = join( os.tmpdir(), "nw-autoupdate" );
+    this.backupPath = backupPath;
     this.release = "";
     this.argv = nw.App.argv;
     this.remoteManifest = "";
@@ -117,7 +118,7 @@ class AutoUpdater extends EventEmitter {
   async restartToSwap(){
     const program = join( this.updatePath, this.runner ),
           tpmUserData = join( nw.App.dataPath, "swap" ),
-          args = [ nw.App.argv, `--user-data-dir=${tpmUserData}` ];
+          args = [ ...this.argv, `--user-data-dir=${tpmUserData}`, `--app-data-path=${nw.App.dataPath}` ];
     if ( IS_OSX ) {
       await launch( "open", [ "-a", program, ...args, `--swap=${HOME_DIR}` ], HOME_DIR );
     } else {
@@ -141,19 +142,24 @@ class AutoUpdater extends EventEmitter {
    * Do swap
    */
   async swap(){
-    return await swap( this.homeDir, HOME_DIR, this.runner );
+    return await swap( this.homeDir, HOME_DIR, this.backupPath || this.homeDir + ".bak" );
   }
   /**
    * REstart after swap
    * @returns {Promise}
    */
   async restart(){
-    const argv = nw.App.argv.filter( arg => !arg.startsWith( "--swap=" ) && !arg.startsWith( "--user-data-dir=" ) ),
+    const appDataPath = this.argv.find( arg => arg.startsWith( "--app-data-path=" ) ).substr( 16 ),
+          argv = this.argv.filter( arg => !arg.startsWith( "--swap=" )
+            && !arg.startsWith( "--user-data-dir=" )
+            && !arg.startsWith( "--app-data-path=" )
+          ),
           program = join( this.homeDir, this.runner );
+
     if ( IS_OSX ) {
-      await launch( "open", [ "-a", program, ...nw.App.argv ], this.homeDir );
+      await launch( "open", [ "-a", program, ...argv, `--user-data-dir=${appDataPath}` ], this.homeDir );
     } else {
-      await launch( program, nw.App.argv, this.homeDir );
+      await launch( program, [ ...argv, `--user-data-dir=${appDataPath}` ], this.homeDir );
     }
     nw.App.quit();
   }

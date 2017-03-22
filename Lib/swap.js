@@ -9,12 +9,11 @@ const { join, dirname } = require( "path" ),
  * Swap update and original directories
  * @param {string} origHomeDir
  * @param {string} selfDir
- * @param {string} runner
+ * @param {string} backupPath
  * @returns {Promise}
  */
-async function swap( origHomeDir, selfDir, runner ){
-  const backup = origHomeDir + ".old";
-  await copy( origHomeDir, backup, { overwrite: true } );
+async function swap( origHomeDir, selfDir, backupPath ){
+  await copy( origHomeDir, backupPath, { overwrite: true } );
   await copy( selfDir, origHomeDir, { overwrite: true } );
 }
 /**
@@ -39,9 +38,9 @@ async function launch( runnerPath, argv, cwd ){
          reject( err );
        });
 
-       child.on( "exit", resolve );
-
        child.unref();
+
+       setTimeout( resolve, 500 );
    });
 }
 

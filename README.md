@@ -10,6 +10,8 @@ Library provides low-level API to control NW.js app auto-updates. This project c
 - supports both Zip/Tar.Gz archives
 - fires download/install progress events
 
+![Autoupdater in action](./nw-autoupdater.gif)
+
 # How it works
 - It reads manifest from the remote release server
 - It checks if the version in the remote manifest greater than one of the local manifest it starts the update flow
@@ -43,6 +45,7 @@ new AutoUpdate( manifest, options );
 **Params**
 - `manifest` - e.g. `require( "./package.json" )`
 - `options.executable` - (OPTIONAL) executable if it doesn't match project name
+- `options.backupPath` - (OPTIONAL) directory to backup. By default it's <project_name>.bak next to app directory
 
 
 ### readRemoteManifest
