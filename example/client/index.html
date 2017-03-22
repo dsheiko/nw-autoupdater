@@ -33,7 +33,7 @@
           if ( !confirm( "New release is available. do you want to upgrade?" ) ) {
             return;
           }
-          
+
           // Subscribe for progress events
           updater.on( "download", ( downloadSize, totalSize ) => {
             output.innerHTML = `Downloading...`;

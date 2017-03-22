@@ -1,0 +1,90 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node', '/usr/local/bin/npm', 'publish' ]
+2 info using npm@4.1.2
+3 info using node@v7.7.2
+4 verbose publish [ '.' ]
+5 silly cache add args [ '.', null ]
+6 verbose cache add spec .
+7 silly cache add parsed spec Result {
+7 silly cache add   raw: '.',
+7 silly cache add   scope: null,
+7 silly cache add   escapedName: null,
+7 silly cache add   name: null,
+7 silly cache add   rawSpec: '.',
+7 silly cache add   spec: '/Users/sheiko/Sites/nw-autoupdater',
+7 silly cache add   type: 'directory' }
+8 verbose addLocalDirectory /Users/sheiko/.npm/nw-autoupdater/0.0.8/package.tgz not in flight; packing
+9 verbose correctMkdir /Users/sheiko/.npm correctMkdir not in flight; initializing
+10 info lifecycle nw-autoupdater@0.0.8~prepublish: nw-autoupdater@0.0.8
+11 silly lifecycle nw-autoupdater@0.0.8~prepublish: no script for prepublish, continuing
+12 info lifecycle nw-autoupdater@0.0.8~prepare: nw-autoupdater@0.0.8
+13 silly lifecycle nw-autoupdater@0.0.8~prepare: no script for prepare, continuing
+14 verbose tar pack [ '/Users/sheiko/.npm/nw-autoupdater/0.0.8/package.tgz',
+14 verbose tar pack   '/Users/sheiko/Sites/nw-autoupdater' ]
+15 verbose tarball /Users/sheiko/.npm/nw-autoupdater/0.0.8/package.tgz
+16 verbose folder /Users/sheiko/Sites/nw-autoupdater
+17 verbose addLocalTarball adding from inside cache /Users/sheiko/.npm/nw-autoupdater/0.0.8/package.tgz
+18 verbose correctMkdir /Users/sheiko/.npm correctMkdir not in flight; initializing
+19 silly cache afterAdd nw-autoupdater@0.0.8
+20 verbose afterAdd /Users/sheiko/.npm/nw-autoupdater/0.0.8/package/package.json not in flight; writing
+21 verbose correctMkdir /Users/sheiko/.npm correctMkdir not in flight; initializing
+22 verbose afterAdd /Users/sheiko/.npm/nw-autoupdater/0.0.8/package/package.json written
+23 silly publish { name: 'nw-autoupdater',
+23 silly publish   description: 'NW.js autoupdate library',
+23 silly publish   keywords: [],
+23 silly publish   version: '0.0.8',
+23 silly publish   main: 'index.js',
+23 silly publish   scripts: { test: 'echo "Error: no test specified" && exit 1' },
+23 silly publish   manifestUrl: 'http://127.0.0.1:8080/package.json',
+23 silly publish   author: '',
+23 silly publish   license: 'ISC',
+23 silly publish   dependencies:
+23 silly publish    { debounce: '^1.0.0',
+23 silly publish      decompress: '^4.0.0',
+23 silly publish      'decompress-targz': '^4.0.0',
+23 silly publish      'decompress-zip': '^0.3.0',
+23 silly publish      'recursive-copy': '^2.0.6',
+23 silly publish      semver: '^5.3.0' },
+23 silly publish   readme: '# NW-Autoupdater\n[![NPM](https://nodei.co/npm/nw-autoupdater.png)](https://nodei.co/npm/nw-autoupdater/)\n\nLibrary provides low-level API to control NW.js app auto-updates. This project can be seen as a reincarnation of\n[node-webkit-updater](https://github.com/edjafarov/node-webkit-updater), which is not maintained anymore.\n\n## Features\n- Node >= 7 compliant\n- clean async/await syntax\n- supports both Zip/Tar.Gz archives\n- fires download/install progress events\n\n![Autoupdater in action](./nw-autoupdater.gif)\n\n# How it works\n- It reads manifest from the remote release server\n- It checks if the version in the remote manifest greater than one of the local manifest it starts the update flow\n- It downloads the latest available version matching the host platform (according to the `packages` map of the remote manifest)\n- It unpacks it in a temporary directory\n- It closes the app and launches it from the downloaded release (from temporary directory)\n- From the downloaded release it backs up actual version and replace it with the new one\n- It restarts the app from its original location\n\n## Distribution\n\n- Run release server (see [example](example/server/README.md))\n- Add to your client manifest ([package.json](example/client/package.json)) field `manifestUrl` pointing at release server\n- Package your app by using [nwjs-builder](https://github.com/evshiron/nwjs-builder) (see [example](example/client/README.md))\n- Update the contents of `packages` field in release server manifest (e.g. by running  `node update.js`)\n- Update `version` field in release server manifest\n- Launch your app and observe it\'s auto-updating\n\n## Examples\n\n- [Client](example/client/index.html)\n- [Server](example/server/README.md)\n\n## API\n\n### Constructor\n```\nnew AutoUpdate( manifest, options );\n```\n\n**Params**\n- `manifest` - e.g. `require( "./package.json" )`\n- `options.executable` - (OPTIONAL) executable if it doesn\'t match project name\n- `options.backupPath` - (OPTIONAL) directory to backup. By default it\'s <project_name>.bak next to app directory\n\n\n### readRemoteManifest\nReads package.json of the release server\n```\nconst rManifest = await updater.readRemoteManifest();\n```\n**Returns**: `Promise<manifest: Object>`\n\n### checkNewVersion\nCheck if the release server has newer app version\n```\nconst needsUpdate = await updater.checkNewVersion( rManifest );\n```\n**Params**\n- `rManifest` - manifest of the release server\n\n**Returns**: `Promise<needsUpdate: boolean>`\n\n\n### download\nDownload last available update to the temp directory\n```\nconst updateFile = await updater.download( rManifest, { debounceTime: 100 });\n```\n**Params**\n- `rManifest` - manifest of the release server\n- `options.debounceTime` - (OPTIONAL) debounce time in milliseconds\n\n**Returns**: `Promise<filepath: string>`\n\n\n### unpack\nUnpack downloaded update\n```\nconst extractDir = await updater.unpack( updateFile, { debounceTime: 100 } );\n```\n**Params**\n- `updateFile` - path to downloaded update\n- `options.debounceTime` - (OPTIONAL) debounce time in milliseconds\n\n**Returns**: `Promise<directory: string>`\n\n### restartToSwap\nClose this version of app and start the downloaded one with --swap param\n```\nawait updater.restartToSwap();\n```\n\n**Returns**: `Promise`\n\n\n### isSwapRequest\nChecks if the app launched for swap\n```\nconst needsSwap = updater.isSwapRequest();\n```\n**Returns**: `boolean`\n\n### swap\nBacks up current version of the app and replaces it with the downloaded version\n```\nawait updater.swap();\n```\n\n**Returns**: `Promise`\n\n### restart\nRestarts the updated app\n```\nawait updater.restart();\n```\n\n**Returns**: `Promise`\n\n\n## Events\n\n### download\nSubscribe on download progress event\n```\nupdater.on( "download", ( downloadSize, totalSize ) => {\n  console.log( "download progress", Math.floor( downloadSize / totalSize * 100 ), "%" );\n});\n```\n\n### install\nSubscribe on install progress event\n```\nupdater.on( "install", ( installFiles, totalFiles ) => {\n  console.log( "install progress", Math.floor( installFiles / totalFiles * 100 ), "%" );\n});\n```\n\n',
+23 silly publish   readmeFilename: 'README.md',
+23 silly publish   gitHead: '1c00c366d7ed27c1663be63facb7eb55f00f6416',
+23 silly publish   _id: 'nw-autoupdater@0.0.8',
+23 silly publish   _shasum: '3e9d62ce59d98a90e83ced698bb104cace10e7bd',
+23 silly publish   _from: '.' }
+24 info lifecycle nw-autoupdater@0.0.8~prepublishOnly: nw-autoupdater@0.0.8
+25 silly lifecycle nw-autoupdater@0.0.8~prepublishOnly: no script for prepublishOnly, continuing
+26 verbose getPublishConfig undefined
+27 silly mapToRegistry name nw-autoupdater
+28 silly mapToRegistry using default registry
+29 silly mapToRegistry registry https://registry.npmjs.org/
+30 silly mapToRegistry data Result {
+30 silly mapToRegistry   raw: 'nw-autoupdater',
+30 silly mapToRegistry   scope: null,
+30 silly mapToRegistry   escapedName: 'nw-autoupdater',
+30 silly mapToRegistry   name: 'nw-autoupdater',
+30 silly mapToRegistry   rawSpec: '',
+30 silly mapToRegistry   spec: 'latest',
+30 silly mapToRegistry   type: 'tag' }
+31 silly mapToRegistry uri https://registry.npmjs.org/nw-autoupdater
+32 verbose publish registryBase https://registry.npmjs.org/
+33 silly publish uploading /Users/sheiko/.npm/nw-autoupdater/0.0.8/package.tgz
+34 verbose stack Error: auth required for publishing
+34 verbose stack     at CachingRegistryClient.publish (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/publish.js:30:14)
+34 verbose stack     at /usr/local/lib/node_modules/npm/lib/publish.js:137:14
+34 verbose stack     at mapToRegistry (/usr/local/lib/node_modules/npm/lib/utils/map-to-registry.js:62:3)
+34 verbose stack     at publish_ (/usr/local/lib/node_modules/npm/lib/publish.js:108:3)
+34 verbose stack     at Array.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/slide/lib/bind-actor.js:15:8)
+34 verbose stack     at LOOP (/usr/local/lib/node_modules/npm/node_modules/slide/lib/chain.js:15:14)
+34 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/slide/lib/chain.js:18:7
+34 verbose stack     at done (/usr/local/lib/node_modules/npm/lib/utils/lifecycle.js:132:5)
+34 verbose stack     at LOOP (/usr/local/lib/node_modules/npm/node_modules/slide/lib/chain.js:7:26)
+34 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/slide/lib/chain.js:18:7
+35 verbose cwd /Users/sheiko/Sites/nw-autoupdater
+36 error Darwin 16.4.0
+37 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "publish"
+38 error node v7.7.2
+39 error npm  v4.1.2
+40 error code ENEEDAUTH
+41 error need auth auth required for publishing
+42 error need auth You need to authorize this machine using `npm adduser`
+43 verbose exit [ 1, true ]
