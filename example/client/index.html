@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Autoupdater Example</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body>
+    <output id="output">..</output>
+    <script>
+      const AutoUpdater = require( "../../" ),
+            { requestSwap } = require( "../../Lib/swap" ),
+            updater = new AutoUpdater( require( "./package.json" ) );
+
+      async function main(){
+        try {
+          // Update copy is running to replace app with the update
+          if ( updater.isSwapRequest() ) {
+            await updater.swap();
+            await updater.restart();
+            nw.App.quit();
+            return;
+          }
+          // Subscribe for progress events
+          updater.on( "download", ( downloadSize, totalSize ) => {
+            console.log( "download progress", Math.floor( downloadSize / totalSize * 100 ), "%" );
+          });
+          updater.on( "install", ( installFiles, totalFiles ) => {
+            console.log( "install progress", Math.floor( installFiles / totalFiles * 100 ), "%" );
+          });
+          // Download/unpack update if any available
+          const rManifest = await updater.readRemoteManifest();
+          const needsUpdate = await updater.checkNewVersion( rManifest );
+          if ( !needsUpdate ) {
+            return;
+          }
+          const updateFile = await updater.download( rManifest );
+          await updater.unpack( updateFile );
+          await updater.restartToSwap();
+        } catch ( e ) {
+          console.error( e );
+        }
+      }
+      main();
+
+      document.querySelector( "#output" ).innerHTML = `Application ver. ${nw.App.manifest.version}`;
+
+    </script>
+  </body>
+</html>
