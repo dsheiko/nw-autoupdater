@@ -119,14 +119,16 @@ await updater.restart();
 
 ## Events
 
-### download - Subscribe on download progress event
+### download
+Subscribe on download progress event
 ```
 updater.on( "download", ( downloadSize, totalSize ) => {
   console.log( "download progress", Math.floor( downloadSize / totalSize * 100 ), "%" );
 });
 ```
 
-### install - Subscribe on install progress event
+### install
+Subscribe on install progress event
 ```
 updater.on( "install", ( installFiles, totalFiles ) => {
   console.log( "install progress", Math.floor( installFiles / totalFiles * 100 ), "%" );
