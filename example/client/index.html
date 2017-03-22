@@ -8,8 +8,7 @@
   <body>
     <output id="output">..</output>
     <script>
-      const AutoUpdater = require( "../../" ),
-            { requestSwap } = require( "../../Lib/swap" ),
+      const AutoUpdater = require( "nw-autoupdater" ),
             updater = new AutoUpdater( require( "./package.json" ) );
 
       async function main(){

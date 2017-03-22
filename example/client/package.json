@@ -15,5 +15,8 @@
   "devDependencies": {
     "nw": "sdk",
     "nwjs-builder": "^1.14.0"
+  },
+  "dependencies": {
+    "nw-autoupdater": "0.0.1"
   }
 }

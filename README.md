@@ -1,4 +1,6 @@
 # NW-Autoupdater
+[![NPM](https://nodei.co/npm/nw-autoupdater.png)](https://nodei.co/npm/nw-autoupdater/)
+
 Library provides low-level API to control NW.js app auto-updates. This project can be seen as a reincarnation of
 [node-webkit-updater](https://github.com/edjafarov/node-webkit-updater), which is not maintained anymore.
 
