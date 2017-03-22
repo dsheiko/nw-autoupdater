@@ -31,7 +31,7 @@ class AutoUpdater extends EventEmitter {
     this.argv = nw.App.argv;
     this.remoteManifest = "";
     this.platform = AutoUpdater.getPlatform();
-    this.runner = executable || ( IS_OSX ? `open -a ${manifest.name}` : manifest.name );
+    this.runner = executable || ( IS_OSX ? `${manifest.name}.app` : manifest.name );
   }
   /**
    * Extract platform info from process

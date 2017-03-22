@@ -1,12 +1,12 @@
 {
   "name": "nw-autoupdater-demo",
-  "version": "1.0.27",
+  "version": "1.0.31",
   "description": "",
   "main": "index.html",
   "scripts": {
     "start": "nw .",
     "postversion": "npm run package",
-    "package": "nwb nwbuild -v 0.21.3-sdk . -o ../server/releases -p linux64 --output-format=ZIP"
+    "package": "nwb nwbuild -v 0.21.3-sdk . -o ../server/releases -p osx64 --output-format=ZIP"
   },
   "manifestUrl": "http://127.0.0.1:8080/package.json",
   "keywords": [],
