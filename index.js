@@ -115,11 +115,13 @@ class AutoUpdater extends EventEmitter {
    * @returns {Promise}
    */
   async restartToSwap(){
-    const program = join( this.updatePath, this.runner );
+    const program = join( this.updatePath, this.runner ),
+          tpmUserData = join( nw.App.dataPath, "swap" ),
+          args = [ nw.App.argv, `--user-data-dir=${tpmUserData}` ];
     if ( IS_OSX ) {
-      await launch( "open", [ "-a", program, ...nw.App.argv, `--swap=${HOME_DIR}` ], HOME_DIR );
+      await launch( "open", [ "-a", program, ...args, `--swap=${HOME_DIR}` ], HOME_DIR );
     } else {
-      await launch( program, [ ...nw.App.argv, `--swap=${HOME_DIR}` ], HOME_DIR );
+      await launch( program, [ ...args, `--swap=${HOME_DIR}` ], HOME_DIR );
     }
     nw.App.quit();
   }
