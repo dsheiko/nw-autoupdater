@@ -17,17 +17,17 @@ async function swap( homeDir, updateDir, runner ){
   const backup = homeDir + ".old",
         err = fs.openSync( LOG_PATH, "a" );
   return new Promise(( resolve, reject ) => {
-    fs.rmdir( backup, ( err ) => {
-      if ( err ) {
-        return reject( err );
-      }
-      fs.rename( homeDir, backup, ( err ) => {
-        if ( err ) {
-          return reject( err );
+    fs.rmdir( backup, () => {
+      // may not exist
+      fs.rename( homeDir, backup, ( e ) => {
+        if ( e ) {
+          fs.writeSync( err, [ "ERROR:", e, "\r\n" ].join( " " ), "utf-8" );
+          return reject( e );
         }
-        ncp( updateDir, homeDir, ( err ) => {
-          if ( err ) {
-            return reject( err );
+        ncp( updateDir, homeDir, ( e ) => {
+          if ( e ) {
+            fs.writeSync( err, [ "ERROR:", e, "\r\n" ].join( " " ), "utf-8" );
+            return reject( e );
           }
           resolve();
         });

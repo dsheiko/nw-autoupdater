@@ -6,12 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
   <body>
-    <div id="output">..</div>
-    <label id="label"></label>
-    <progress id="progress" value="0" max="100"></progress>
+    <output id="output">..</output>
     <script>
       const AutoUpdater = require( "nw-autoupdater" ),
-            updater = new AutoUpdater( require( "./package.json" ) );
+            updater = new AutoUpdater( require( "./package.json" ) ),
+            output =  document.querySelector( "#output" );
 
       async function main(){
         try {
@@ -23,18 +22,13 @@
           }
           // Subscribe for progress events
           updater.on( "download", ( downloadSize, totalSize ) => {
-            const percent = Math.floor( downloadSize / totalSize * 100 );
-            console.log( `download progress ${percent} %` );
-            document.getElementById( "label" ).innerHTML = "Downloading...";
-            document.getElementById( "progress" ).value = percent;
+            output.innerHTML = `Downloading...\n`;
+            console.log( "download progress", Math.floor( downloadSize / totalSize * 100 ), "%" );
           });
           updater.on( "install", ( installFiles, totalFiles ) => {
-            const percent = Math.floor( installFiles / totalFiles * 100 );
-            console.log( `install progress ${percent} %` );
-            document.getElementById( "label" ).innerHTML = "Installing...";
-            document.getElementById( "progress" ).value = percent;
+            output.innerHTML = `Installing...\n`;
+            console.log( "install progress", Math.floor( installFiles / totalFiles * 100 ), "%" );
           });
-
           // Download/unpack update if any available
           const rManifest = await updater.readRemoteManifest();
           const needsUpdate = await updater.checkNewVersion( rManifest );
@@ -53,7 +47,7 @@
       }
       main();
 
-      document.querySelector( "#output" ).innerHTML = `Application ver. ${nw.App.manifest.version}`;
+      output.innerHTML = `Application ver. ${nw.App.manifest.version}\n`;
 
     </script>
   </body>
