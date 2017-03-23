@@ -1,8 +1,13 @@
 {
   "name": "nw-autoupdater",
-  "description": "NW.js autoupdate library",
-  "keywords": [],
-  "version": "0.0.10",
+  "description": "Library provides low-level API to control NW.js app auto-updates",
+  "keywords": [
+    "nwjs",
+    "node-webkit",
+    "update",
+    "autoupdate"
+  ],
+  "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

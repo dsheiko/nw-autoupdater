@@ -46,7 +46,8 @@ new AutoUpdate( manifest, options );
 - `manifest` - e.g. `require( "./package.json" )`
 - `options.executable` - (OPTIONAL) executable if it doesn't match project name
 - `options.backupDir` - (OPTIONAL) directory to backup. By default it's <project_name>.bak next to app directory
-- `options.homeDir` - (OPTIONAL) app directory
+- `options.homeDir` - (OPTIONAL) app directory.  By default it's extracted from `process.execPath` (nwjs-builder bundles the app into self-extractable and `process.cwd()` is not a reliable source). Yet on a Mac `process.execPath` contains the full path to the executable within MacOS bundle. So you rather use this option to set the app path directly.
+
 
 ### readRemoteManifest
 Reads package.json of the release server
