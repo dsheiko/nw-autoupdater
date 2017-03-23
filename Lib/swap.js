@@ -12,7 +12,7 @@ const { join, dirname } = require( "path" ),
  * @returns {Promise}
  */
 async function copy( from, to ){
-  return Promise(( resolve, reject ) => {
+  return new Promise(( resolve, reject ) => {
     fs.copy( from, to, ( err ) => {
       if ( err ) {
         return reject( err );
