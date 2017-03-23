@@ -1,9 +1,26 @@
 const { join, dirname } = require( "path" ),
-      fs = require( "fs" ),
+      fs = require( "fs-extra" ),
       os = require( "os" ),
       { spawn } = require( "child_process" ),
-      copy = require( "recursive-copy" ),
       LOG_PATH = join( nw.App.dataPath, "swap.log" );
+
+
+/**
+ * Copy dir
+ * @param {string} from
+ * @param {string} to
+ * @returns {Promise}
+ */
+async function copy( from, to ){
+  return Promise(( resolve, reject ) => {
+    fs.copy( from, to, ( err ) => {
+      if ( err ) {
+        return reject( err );
+      }
+      resolve();
+    });
+  });
+}
 
 /**
  * Swap update and original directories
@@ -13,8 +30,8 @@ const { join, dirname } = require( "path" ),
  * @returns {Promise}
  */
 async function swap( origHomeDir, selfDir, backupPath ){
-  await copy( origHomeDir, backupPath, { overwrite: true } );
-  await copy( selfDir, origHomeDir, { overwrite: true } );
+  await copy( origHomeDir, backupPath );
+  await copy( selfDir, origHomeDir );
 }
 /**
  * Launch detached process
