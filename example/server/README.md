@@ -2,8 +2,8 @@
 
 It's a static server that keeps manifest and last app releases. 
 Releases of nwjs app are built with 'nw-builder' (as example), the structure of builds is next:
-macos - %APPNAME%.app (compressed *.app file for release);
-win/linux - %FOLDER_NAME% with binary and other necessary files inside (compressed all files inside this folder for release);
+* macos - %APPNAME%.app (compressed *.app file for release);
+* win/linux - %FOLDER_NAME% with binary and other necessary files inside (compressed all files inside this folder for release);
 
 ## package.json
 ```
