@@ -5,6 +5,8 @@ Releases of nwjs app are built with 'nw-builder' (as example), the structure of 
 * macos - %APPNAME%.app (compressed *.app file for release);
 * win/linux - %FOLDER_NAME% with binary and other necessary files inside (compressed all files inside this folder for release);
 
+Updater during update process will create backup of your current application, for macos in the same folder %APPNAME%.app.bak will be created, on win/linux it will create %FOLDER_NAME%.bak in the folder with application folder %FOLDER_NAME%.
+
 ## package.json
 ```
 {
