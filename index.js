@@ -11,7 +11,7 @@ const EventEmitter = require( "events" ),
       DEBOUNCE_TIME = 500,
       IS_OSX = /^darwin/.test( process.platform ),
       IS_WIN = /^win/.test( process.platform ),
-      HOME_DIR = dirname( process.execPath );
+      HOME_DIR = IS_OSX ?  dirname( process.execPath.match(/^([^\0]+?\.app)\//)[1] ) : dirname( process.execPath );
 
 class AutoUpdater extends EventEmitter {
   /**
@@ -24,6 +24,7 @@ class AutoUpdater extends EventEmitter {
       backupDir: null,
       homeDir: null
     }){
+
     super();
     this.manifest = manifest;
     if ( !this.manifest.manifestUrl ) {
@@ -34,7 +35,6 @@ class AutoUpdater extends EventEmitter {
     this.argv = nw.App.argv;
     this.remoteManifest = "";
     this.homeDir = AutoUpdater.normalizePath( homeDir );
-    this.backupDir = AutoUpdater.normalizePath( backupDir ) || ( this.homeDir || HOME_DIR ) + ".bak";
     this.platform = AutoUpdater.getPlatform();
     this.runner = executable || ( IS_OSX ? `${manifest.name}.app` : manifest.name );
   }
@@ -125,11 +125,7 @@ class AutoUpdater extends EventEmitter {
     }
     return this.updatePath;
   }
-
-  static escapeMacOS( dir ){
-    return dir.replace( / /g, "\\ " );
-  }
-
+  
   /**
    * Restart and launch detached swap
    * @returns {Promise}
@@ -139,9 +135,9 @@ class AutoUpdater extends EventEmitter {
           tpmUserData = join( nw.App.dataPath, "swap" ),
           homeDir = this.homeDir || HOME_DIR,
           args = [ ...this.argv, `--user-data-dir=${tpmUserData}`, `--app-data-path=${nw.App.dataPath}` ];
+
     if ( IS_OSX ) {
-      await launch( "open", [ "-a", program, "--args", ...args, `--swap=${homeDir}` ]
-        .map( AutoUpdater.escapeMacOS ), homeDir );
+      await launch( "open", [ "-a", program, "--args", ...args, `--swap=${homeDir}` ], homeDir );
     } else {
       await launch( program, [ ...args, `--swap=${homeDir}` ], homeDir );
     }
@@ -156,6 +152,7 @@ class AutoUpdater extends EventEmitter {
     if ( !raw ) {
       return false;
     }
+
     this.originDir = this.homeDir || raw.substr( 7 );
     return true;
   }
@@ -163,7 +160,7 @@ class AutoUpdater extends EventEmitter {
    * Do swap
    */
   async swap(){
-    return await swap( this.originDir, this.updatePath, this.backupDir );
+    return await swap( this.originDir, this.updatePath, this.runner );
   }
   /**
    * REstart after swap
@@ -176,11 +173,10 @@ class AutoUpdater extends EventEmitter {
             && !arg.startsWith( "--app-data-path=" )
           ),
           homeDir = this.homeDir || HOME_DIR,
-          program = join( homeDir, this.runner );
+          program = join( this.originDir, this.runner );
 
     if ( IS_OSX ) {
-      await launch( "open", [ "-a", program, "--args", ...argv, `--user-data-dir=${appDataPath}` ]
-        .map( AutoUpdater.escapeMacOS ), homeDir );
+      await launch( "open", [ "-a", program, "--args", ...argv, `--user-data-dir=${appDataPath}` ], homeDir );
     } else {
       await launch( program, [ ...argv, `--user-data-dir=${appDataPath}` ], homeDir );
     }
