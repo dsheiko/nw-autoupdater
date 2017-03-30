@@ -2,7 +2,8 @@ const { join, dirname } = require( "path" ),
       fs = require( "fs-extra" ),
       os = require( "os" ),
       { spawn } = require( "child_process" ),
-      LOG_PATH = join( nw.App.dataPath, "swap.log" );
+      LOG_PATH = join( nw.App.dataPath, "swap.log" ),
+      IS_OSX = /^darwin/.test( process.platform );
 
 
 /**
@@ -29,9 +30,14 @@ async function copy( from, to ){
  * @param {string} backupPath
  * @returns {Promise}
  */
-async function swap( origHomeDir, selfDir, backupPath ){
-  await copy( origHomeDir, backupPath );
-  await copy( selfDir, origHomeDir );
+async function swap( origHomeDir, selfDir, runner ){
+    if (IS_OSX) {
+        await copy( join( origHomeDir, runner ), join( origHomeDir, runner + ".bak" ) );
+        await copy( selfDir, origHomeDir );
+    } else {
+        await copy( origHomeDir, origHomeDir + ".bak" );
+        await copy( selfDir, origHomeDir );
+    }
 }
 /**
  * Launch detached process
