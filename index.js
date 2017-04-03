@@ -35,6 +35,7 @@ class AutoUpdater extends EventEmitter {
     this.argv = nw.App.argv;
     this.remoteManifest = "";
     this.homeDir = AutoUpdater.normalizePath( homeDir );
+    this.backupDir = backupDir;
     this.platform = AutoUpdater.getPlatform();
     this.runner = executable || ( IS_OSX ? `${manifest.name}.app` : manifest.name );
   }
@@ -125,24 +126,27 @@ class AutoUpdater extends EventEmitter {
     }
     return this.updatePath;
   }
-  
+
   /**
    * Restart and launch detached swap
    * @returns {Promise}
    */
   async restartToSwap(){
-    const program = join( this.updatePath, this.runner ),
+    const program = join( this.updatePath, "node_modules/.bin/swap-linux" ),
           tpmUserData = join( nw.App.dataPath, "swap" ),
           homeDir = this.homeDir || HOME_DIR,
-          args = [ ...this.argv, `--user-data-dir=${tpmUserData}`, `--app-data-path=${nw.App.dataPath}` ];
+          backupPath = this.backupDir || homeDir + ".bak",
+          args = [ `--app-path=${homeDir}`, `--update-path=${this.updatePath}`, `--runner=${this.runner}`,
+            `--bak-path=${backupPath}` ];
 
     if ( IS_OSX ) {
       await launch( "open", [ "-a", program, "--args", ...args, `--swap=${homeDir}` ], homeDir );
     } else {
-      await launch( program, [ ...args, `--swap=${homeDir}` ], homeDir );
+      await launch( program, args, this.updatePath );
     }
     nw.App.quit();
   }
+
   /**
    * Is it a swap request
    * @returns {Boolean}

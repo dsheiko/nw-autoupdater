@@ -9,6 +9,11 @@
   ],
   "version": "1.0.2",
   "main": "index.js",
+  "bin": {
+    "swap-linux": "./bin/swap-linux.sh",
+    "swap-osx": "./bin/swap-osx.sh",
+    "swap-windows.bat": "./bin/swap-windows.bat"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
