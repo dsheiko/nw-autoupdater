@@ -27,15 +27,16 @@ async function copy( from, to ){
  * Swap update and original directories
  * @param {string} origHomeDir
  * @param {string} selfDir
+ * @param {string} runner
  * @param {string} backupPath
  * @returns {Promise}
  */
-async function swap( origHomeDir, selfDir, runner ){
+async function swap( origHomeDir, selfDir, runner, backupDir = null ){
     if (IS_OSX) {
-        await copy( join( origHomeDir, runner ), join( origHomeDir, runner + ".bak" ) );
+        await copy( join( origHomeDir, runner ), backupDir || join( origHomeDir, runner + ".bak" ) );
         await copy( selfDir, origHomeDir );
     } else {
-        await copy( origHomeDir, origHomeDir + ".bak" );
+        await copy( origHomeDir, backupDir || origHomeDir + ".bak" );
         await copy( selfDir, origHomeDir );
     }
 }

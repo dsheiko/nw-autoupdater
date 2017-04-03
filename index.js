@@ -37,6 +37,7 @@ class AutoUpdater extends EventEmitter {
     this.homeDir = AutoUpdater.normalizePath( homeDir );
     this.platform = AutoUpdater.getPlatform();
     this.runner = executable || ( IS_OSX ? `${manifest.name}.app` : manifest.name );
+    this.backupDir = backupDir;
   }
   /**
    * Remove trailing slash
@@ -125,7 +126,7 @@ class AutoUpdater extends EventEmitter {
     }
     return this.updatePath;
   }
-  
+
   /**
    * Restart and launch detached swap
    * @returns {Promise}
@@ -160,7 +161,7 @@ class AutoUpdater extends EventEmitter {
    * Do swap
    */
   async swap(){
-    return await swap( this.originDir, this.updatePath, this.runner );
+    return await swap( this.originDir, this.updatePath, this.runner, this.backupDir );
   }
   /**
    * REstart after swap
