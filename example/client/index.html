@@ -14,15 +14,7 @@
 
       async function main(){
         try {
-          // Update copy is running to replace app with the update
-          if ( updater.isSwapRequest() ) {
-            output.innerHTML += `\nSwapping...`;
-            await updater.swap();
-            output.innerHTML += `\nDone...`;
-            await updater.restart();
-            return;
-          }
-
+          
           // Download/unpack update if any available
           const rManifest = await updater.readRemoteManifest();
           const needsUpdate = await updater.checkNewVersion( rManifest );

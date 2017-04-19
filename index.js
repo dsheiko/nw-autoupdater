@@ -5,58 +5,44 @@ const EventEmitter = require( "events" ),
       unpackTarGz = require( "./Lib/unpackTarGz" ),
       unpackZip = require( "./Lib/unpackZip" ),
       debounce = require( "debounce" ),
+
       { readJson, download }  = require( "./Lib/request" ),
-      { launch, swap } = require( "./Lib/swap" ),
+      { launch, rtrim } = require( "./Lib/utils" ),
+      { PLATFORM_FULL, swapFactory,
+        getExecutable, UPDATE_DIR, EXEC_DIR, BACKUP_DIR, LOG_DIR } = require( "./Lib/env" ),
+
+      LOG_FILE = "nw-autoupdate.log",
       ERR_INVALID_REMOTE_MANIFEST = "Invalid manifest structure",
-      DEBOUNCE_TIME = 500,
-      IS_OSX = /^darwin/.test( process.platform ),
-      IS_WIN = /^win/.test( process.platform ),
-      HOME_DIR = IS_OSX ?  dirname( process.execPath.match(/^([^\0]+?\.app)\//)[1] ) : dirname( process.execPath );
+      DEBOUNCE_TIME = 500;
 
 class AutoUpdater extends EventEmitter {
   /**
    * Create AutoUpdate
    * @param {Object} manifest
-   * @param {Object} executable
+   * @param {Object} options
    */
-  constructor( manifest, { executable, backupDir, homeDir } = {
+  constructor( manifest, options = {
       executable: null,
-      backupDir: null,
-      homeDir: null
+      backupDir: BACKUP_DIR,
+      execDir: EXEC_DIR,
+      updateDir: UPDATE_DIR,
+      logDir: LOG_DIR
     }){
 
     super();
+
     this.manifest = manifest;
     if ( !this.manifest.manifestUrl ) {
       throw new Error( `Manifest must contain manifestUrl field` );
     }
-    this.updatePath = join( os.tmpdir(), "nw-autoupdate" );
+
     this.release = "";
     this.argv = nw.App.argv;
     this.remoteManifest = "";
-    this.homeDir = AutoUpdater.normalizePath( homeDir );
-    this.backupDir = backupDir;
-    this.platform = AutoUpdater.getPlatform();
-    this.runner = executable || ( IS_OSX ? `${manifest.name}.app` : manifest.name );
-  }
-  /**
-   * Remove trailing slash
-   * @param {string} dir
-   * @returns {string}
-   */
-  static normalizePath( dir )
-  {
-    return dir ? dir.replace( /\/$/, "" ) :  null;
-  }
-  /**
-   * Extract platform info from process
-   * @returns {string}
-   */
-  static getPlatform(){
-    const raw = process.platform,
-          platform = IS_WIN ? "win" :
-            ( IS_OSX ? "mac" : "linux" );
-    return platform + ( process.arch === "ia32" ? "32" : "64" );
+    this.options = options;
+    this.options.execDir = rtrim( this.options.execDir );
+    this.options.executable = this.options.executable || getExecutable( manifest.name );
+
   }
 
   /**
@@ -87,9 +73,9 @@ class AutoUpdater extends EventEmitter {
     if ( !remoteManifest || !remoteManifest.packages ){
       throw new TypeError( ERR_INVALID_REMOTE_MANIFEST );
     }
-    const release = remoteManifest.packages[ this.platform ];
+    const release = remoteManifest.packages[ PLATFORM_FULL ];
     if ( !release ) {
-      throw new Error( `No release matches the platfrom ${this.platform}` );
+      throw new Error( `No release matches the platfrom ${PLATFORM_FULL}` );
     }
     const onProgress = ( length ) => {
       this.emit( "download", length, release.size );
@@ -107,7 +93,8 @@ class AutoUpdater extends EventEmitter {
           isGzRe = /\.tar\.gz$/i,
           onProgress = ( installFiles, totalFiles ) => {
             this.emit( "install", installFiles, totalFiles );
-          };
+          },
+          updateDir = this.options.updateDir;
 
     if ( !updateFile ){
       throw new Error( "You have to call first download method" );
@@ -115,16 +102,16 @@ class AutoUpdater extends EventEmitter {
 
     switch( true ) {
       case isGzRe.test( updateFile ):
-         await unpackTarGz( updateFile, this.updatePath, debounce( onProgress, debounceTime ) );
+         await unpackTarGz( updateFile, updateDir, debounce( onProgress, debounceTime ) );
          break;
       case isZipRe.test( updateFile ):
-         await unpackZip( updateFile, this.updatePath, debounce( onProgress, debounceTime ) );
+         await unpackZip( updateFile, updateDir, debounce( onProgress, debounceTime ) );
          break;
       default:
          throw new Error( "Release arhive of unsuported type" );
          break;
     }
-    return this.updatePath;
+    return updateDir;
   }
 
   /**
@@ -132,58 +119,13 @@ class AutoUpdater extends EventEmitter {
    * @returns {Promise}
    */
   async restartToSwap(){
-    const program = join( this.updatePath, "node_modules/.bin/swap-linux" ),
-          tpmUserData = join( nw.App.dataPath, "swap" ),
-          homeDir = this.homeDir || HOME_DIR,
-          backupPath = this.backupDir || homeDir + ".bak",
-          args = [ `--app-path=${homeDir}`, `--update-path=${this.updatePath}`, `--runner=${this.runner}`,
-            `--bak-path=${backupPath}` ];
+    const { execDir, updateDir, executable, backupDir, logDir  } = this.options,
+          swap = swapFactory(),
+          logPath = join( logDir, LOG_FILE ),
+          args = swap.getArgs( execDir, updateDir, executable, backupDir, logPath );
 
-    if ( IS_OSX ) {
-      await launch( "open", [ "-a", program, "--args", ...args, `--swap=${homeDir}` ], homeDir );
-    } else {
-      await launch( program, args, this.updatePath );
-    }
-    nw.App.quit();
-  }
-
-  /**
-   * Is it a swap request
-   * @returns {Boolean}
-   */
-  isSwapRequest(){
-    const raw = this.argv.find( arg => arg.startsWith( "--swap=" ) );
-    if ( !raw ) {
-      return false;
-    }
-
-    this.originDir = this.homeDir || raw.substr( 7 );
-    return true;
-  }
-  /**
-   * Do swap
-   */
-  async swap(){
-    return await swap( this.originDir, this.updatePath, this.runner );
-  }
-  /**
-   * REstart after swap
-   * @returns {Promise}
-   */
-  async restart(){
-    const appDataPath = this.argv.find( arg => arg.startsWith( "--app-data-path=" ) ).substr( 16 ),
-          argv = this.argv.filter( arg => !arg.startsWith( "--swap=" )
-            && !arg.startsWith( "--user-data-dir=" )
-            && !arg.startsWith( "--app-data-path=" )
-          ),
-          homeDir = this.homeDir || HOME_DIR,
-          program = join( this.originDir, this.runner );
-
-    if ( IS_OSX ) {
-      await launch( "open", [ "-a", program, "--args", ...argv, `--user-data-dir=${appDataPath}` ], homeDir );
-    } else {
-      await launch( program, [ ...argv, `--user-data-dir=${appDataPath}` ], homeDir );
-    }
+    swap.extractScript( updateDir );
+    await launch( swap.getRunner(), args, updateDir, logPath );
     nw.App.quit();
   }
 }
