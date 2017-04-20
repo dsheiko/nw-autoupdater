@@ -1,4 +1,4 @@
-# NW-Autoupdater
+# NW-Autoupdater v1.1
 [![NPM](https://nodei.co/npm/nw-autoupdater.png)](https://nodei.co/npm/nw-autoupdater/)
 
 Library provides low-level API to control NW.js app auto-updates. This project can be seen as a reincarnation of
@@ -21,10 +21,8 @@ Library provides low-level API to control NW.js app auto-updates. This project c
   - We subscribe for `install` events
 - `download( rManifest )` downloads the latest available release matching the host platform (according to the `packages` map of the remote manifest)
 - `unpack( updateFile )` unpacks the release archive (`zip` or `tar.gz`) in a temporary directory
-- `restartToSwap()` closes the app and launches the downloaded release
-- `isSwapRequest()` - checks if we need to go the swap flow (while running in tmp and therefore having the initial app directory unlocked for writing)
-- `swap()` - backs up actual version and replaces it with the new one
-- `restart()` - restarts the updated app from its original location
+- `restartToSwap()` closes the app and launches the swap script, which launches the application when it's done
+
 
 ## Distribution
 
@@ -51,7 +49,34 @@ new AutoUpdate( manifest, options );
 - `manifest` - e.g. `require( "./package.json" )`
 - `options.executable` - (OPTIONAL) executable if it doesn't match project name
 - `options.backupDir` - (OPTIONAL) directory to backup. By default it's <project_name>.bak next to app directory
-- `options.homeDir` - (OPTIONAL) app directory.  By default it's extracted from `process.execPath` (nwjs-builder bundles the app into self-extractable and `process.cwd()` is not a reliable source). Yet on a Mac `process.execPath` contains the full path to the executable within MacOS bundle. So you rather use this option to set the app path directly.
+- `options.execDir` - (OPTIONAL) app directory.  By default it's extracted from `process.execPath` (nwjs-builder bundles the app into self-extractable and `process.cwd()` is not a reliable source). Yet on a Mac `process.execPath` contains the full path to the executable within MacOS bundle. So you rather use this option to set the app path directly.
+- `options.updateDir` - (OPTIONAL) temporary directory where the downloaded package gets extracted. By default /tmp/nw-autoupdater
+- `options.logDir` - (OPTIONAL) directory of log file `nw-autoupdater.log`. By default `nw.App.dataPath`: Windows: %LOCALAPPDATA%/<project_name>; Linux: ~/.config/<project_name>; OSX: ~/Library/Application Support/<project_name>
+- `options.verbose` - (OPTIONAL) when `true` swap script reports verbose in the log file. By default `false`
+- `options.swapScript` - (OPTIONAL) you custom swap script content
+
+### Writing custom swap script
+
+By default on Linux/MacIO the following script is used:
+```
+rsync -a\${VERBOSE} --delete \${APP_PATH}/. \${BAK_PATH}/
+rsync -a\${VERBOSE} --delete \${UPDATE_PATH}/. \${APP_PATH}/
+```
+
+where the variables are populated from ARGV:
+
+- VERBOSE - "v" or ""
+- APP_PATH - application home directory
+- BAK_PATH - backup directory
+- UPDATE_PATH - update directory
+
+For example, if you have for package not the entire NW.js application, but just HTML5 project, you set up the following script:
+```
+rsync -a\${VERBOSE} --delete \${APP_PATH}/. \${BAK_PATH}/
+rsync -a\${VERBOSE} \${UPDATE_PATH}/. \${APP_PATH}/package
+```
+So it backups the project, but copies extracted packaged into `package` subfolder in application home directory
+
 
 
 ### readRemoteManifest
@@ -99,30 +124,6 @@ const extractDir = await updater.unpack( updateFile, { debounceTime: 100 } );
 Close this version of app and start the downloaded one with --swap param
 ```
 await updater.restartToSwap();
-```
-
-**Returns**: `Promise`
-
-
-### isSwapRequest
-Checks if the app launched for swap
-```
-const needsSwap = updater.isSwapRequest();
-```
-**Returns**: `boolean`
-
-### swap
-Backs up current version of the app and replaces it with the downloaded version
-```
-await updater.swap();
-```
-
-**Returns**: `Promise`
-
-### restart
-Restarts the updated app
-```
-await updater.restart();
 ```
 
 **Returns**: `Promise`

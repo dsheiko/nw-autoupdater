@@ -14,7 +14,7 @@
 
       async function main(){
         try {
-          
+
           // Download/unpack update if any available
           const rManifest = await updater.readRemoteManifest();
           const needsUpdate = await updater.checkNewVersion( rManifest );
@@ -22,7 +22,7 @@
             output.innerHTML += `\nApp is up to date...`;
             return;
           }
-          if ( !confirm( "New release is available. do you want to upgrade?" ) ) {
+          if ( !confirm( "New release is available. Do you want to upgrade?" ) ) {
             return;
           }
 
@@ -38,6 +38,7 @@
 
           const updateFile = await updater.download( rManifest );
           await updater.unpack( updateFile );
+          alert( `The application will automatically restart to finish installing the update` );
           await updater.restartToSwap();
         } catch ( e ) {
           console.error( e );

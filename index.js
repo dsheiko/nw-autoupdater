@@ -11,9 +11,19 @@ const EventEmitter = require( "events" ),
       { PLATFORM_FULL, swapFactory,
         getExecutable, UPDATE_DIR, EXEC_DIR, BACKUP_DIR, LOG_DIR } = require( "./Lib/env" ),
 
-      LOG_FILE = "nw-autoupdate.log",
+      LOG_FILE = "nw-autoupdater.log",
       ERR_INVALID_REMOTE_MANIFEST = "Invalid manifest structure",
-      DEBOUNCE_TIME = 500;
+      DEBOUNCE_TIME = 500,
+
+      DEFAULT_OPTIONS = {
+        executable: null,
+        backupDir: BACKUP_DIR,
+        execDir: EXEC_DIR,
+        updateDir: UPDATE_DIR,
+        logDir: LOG_DIR,
+        verbose: false,
+        swapScript: null
+      };
 
 class AutoUpdater extends EventEmitter {
   /**
@@ -21,13 +31,7 @@ class AutoUpdater extends EventEmitter {
    * @param {Object} manifest
    * @param {Object} options
    */
-  constructor( manifest, options = {
-      executable: null,
-      backupDir: BACKUP_DIR,
-      execDir: EXEC_DIR,
-      updateDir: UPDATE_DIR,
-      logDir: LOG_DIR
-    }){
+  constructor( manifest, options = {}){
 
     super();
 
@@ -39,7 +43,7 @@ class AutoUpdater extends EventEmitter {
     this.release = "";
     this.argv = nw.App.argv;
     this.remoteManifest = "";
-    this.options = options;
+    this.options = Object.assign( {}, DEFAULT_OPTIONS, options );
     this.options.execDir = rtrim( this.options.execDir );
     this.options.executable = this.options.executable || getExecutable( manifest.name );
 
@@ -119,14 +123,35 @@ class AutoUpdater extends EventEmitter {
    * @returns {Promise}
    */
   async restartToSwap(){
-    const { execDir, updateDir, executable, backupDir, logDir  } = this.options,
-          swap = swapFactory(),
+    const { updateDir, logDir  } = this.options,
+          swap = swapFactory( this.options ),
           logPath = join( logDir, LOG_FILE ),
-          args = swap.getArgs( execDir, updateDir, executable, backupDir, logPath );
+          args = swap.getArgs();
 
     swap.extractScript( updateDir );
     await launch( swap.getRunner(), args, updateDir, logPath );
     nw.App.quit();
+  }
+  /**
+   * @deprecated since v.1.1.0
+   * @returns {Boolean}
+   */
+  isSwapRequest(){
+    return false;
+  }
+  /**
+   * @deprecated since v.1.1.0
+   * @returns {Boolean}
+   */
+  async swap(){
+    return false;
+  }
+  /**
+   * @deprecated since v.1.1.0
+   * @returns {Boolean}
+   */
+  async restart(){
+    return false;
   }
 }
 

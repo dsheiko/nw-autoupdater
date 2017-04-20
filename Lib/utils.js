@@ -1,0 +1,52 @@
+const fs = require( "fs" ),
+      { spawn } = require( "child_process" );
+/**
+  * Remove trailing slash
+  * @param {string} dir
+  * @returns {string}
+  */
+function rtrim( dir )
+{
+  return dir.replace( /\/$/, "" );
+}
+
+
+
+/**
+ * Launch detached process
+ * @param {string} runnerPath
+ * @param {string[]} argv
+ * @param {string} cwd
+ * @param {string} logPath
+ * @returns {Promise}
+ */
+async function launch( runnerPath, argv, cwd, logPath ){
+   return new Promise(( resolve, reject ) => {
+      const log = fs.openSync( logPath, "a" ),
+
+      child = spawn( runnerPath, argv, {
+         timeout: 4000,
+         detached: true,
+         cwd
+       });
+
+      child.stdout.on( "data", ( data ) => {
+         fs.writeSync( log, `stdout: ${data}`, "utf-8" );
+      });
+
+      child.stderr.on( "data", ( data ) => {
+        fs.writeSync( log, `stderr: ${data}`, "utf-8" );
+      });
+
+      child.on( "error", ( e ) => {
+        fs.writeSync( log, [ "ERROR:", e, "\r\n" ].join( " " ), "utf-8" );
+        reject( log );
+      });
+
+       child.unref();
+       setTimeout( resolve, 500 );
+   });
+}
+
+exports.launch = launch;
+exports.rtrim = rtrim;
