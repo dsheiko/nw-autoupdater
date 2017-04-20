@@ -1,4 +1,5 @@
 npm-debug.log
 node_modules
+nw-autoupdater*.tgz
 example/server/releases/*.zip
 swap.log

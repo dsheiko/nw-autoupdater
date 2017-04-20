@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Autoupdater Example</title>
+    <title>Autoupdater Example (App Strategy)</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
@@ -14,6 +14,15 @@
 
       async function main(){
         try {
+
+           // Update copy is running to replace app with the update
+          if ( updater.isSwapRequest() ) {
+            output.innerHTML += `\nSwapping...`;
+            await updater.swap();
+            output.innerHTML += `\nDone...`;
+            await updater.restart();
+            return;
+          }
 
           // Download/unpack update if any available
           const rManifest = await updater.readRemoteManifest();

@@ -1,4 +1,4 @@
-const fs = require( "fs" ),
+const fs = require( "fs-extra" ),
       { spawn } = require( "child_process" );
 /**
   * Remove trailing slash
@@ -11,6 +11,25 @@ function rtrim( dir )
 }
 
 
+/**
+ * Copy dir
+ * @param {string} from
+ * @param {string} to
+ * @param {FileDescriptor} log
+ * @returns {Promise}
+ */
+async function copy( from, to, log ){
+  return new Promise(( resolve, reject ) => {
+    fs.writeSync( log, `copy ${from} ${to}`, "utf-8" );
+    fs.copy( from, to, ( err ) => {
+      if ( err ) {
+        fs.writeSync( log, `ERROR: ${err}`, "utf-8" );
+        return reject( err );
+      }
+      resolve();
+    });
+  });
+}
 
 /**
  * Launch detached process
@@ -31,11 +50,11 @@ async function launch( runnerPath, argv, cwd, logPath ){
        });
 
       child.stdout.on( "data", ( data ) => {
-         fs.writeSync( log, `stdout: ${data}`, "utf-8" );
+         fs.writeSync( log, `${data}`, "utf-8" );
       });
 
       child.stderr.on( "data", ( data ) => {
-        fs.writeSync( log, `stderr: ${data}`, "utf-8" );
+        fs.writeSync( log, `ERROR: ${data}`, "utf-8" );
       });
 
       child.on( "error", ( e ) => {
@@ -50,3 +69,4 @@ async function launch( runnerPath, argv, cwd, logPath ){
 
 exports.launch = launch;
 exports.rtrim = rtrim;
+exports.copy = copy;

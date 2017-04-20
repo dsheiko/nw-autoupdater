@@ -10,7 +10,7 @@ Library provides low-level API to control NW.js app auto-updates. This project c
 - supports both Zip/Tar.Gz archives
 - fires download/install progress events
 
-
+#### Strategy ScriptSwap
 ![Autoupdater in action](https://github.com/dsheiko/nw-autoupdater/raw/master/nw-autoupdater.gif)
 
 # What do we do to autoupdate ([see example](example/client/index.html))
@@ -21,7 +21,13 @@ Library provides low-level API to control NW.js app auto-updates. This project c
   - We subscribe for `install` events
 - `download( rManifest )` downloads the latest available release matching the host platform (according to the `packages` map of the remote manifest)
 - `unpack( updateFile )` unpacks the release archive (`zip` or `tar.gz`) in a temporary directory
-- `restartToSwap()` closes the app and launches the swap script, which launches the application when it's done
+- Strategy AppSwap
+  - `restartToSwap()` closes the app and launches the downloaded release
+  - `isSwapRequest()` - checks if we need to go the swap flow (while running in tmp and therefore having the initial app directory unlocked for writing)
+  - `swap()` - backs up actual version and replaces it with the new one
+  - `restart()` - restarts the updated app from its original location
+- Strategy ScriptSwap
+  - `restartToSwap()` closes the app and launches the swap script, which launches the application when it's done
 
 
 ## Distribution
@@ -35,7 +41,8 @@ Library provides low-level API to control NW.js app auto-updates. This project c
 
 ## Examples
 
-- [Client](example/client/index.html)
+- [Client/Strategy AppSwap](example/client-strategy-app/index.html)
+- [Client/Strategy ScriptSwap](example/client-strategy-script/index.html)
 - [Server](example/server/README.md)
 
 ## API
@@ -47,13 +54,14 @@ new AutoUpdate( manifest, options );
 
 **Params**
 - `manifest` - e.g. `require( "./package.json" )`
+- `options.strategy` - (OPTIONAL) can be `ScriptSwap` or `AppSwap`. By default `AppSwap`
 - `options.executable` - (OPTIONAL) executable if it doesn't match project name
 - `options.backupDir` - (OPTIONAL) directory to backup. By default it's <project_name>.bak next to app directory
 - `options.execDir` - (OPTIONAL) app directory.  By default it's extracted from `process.execPath` (nwjs-builder bundles the app into self-extractable and `process.cwd()` is not a reliable source). Yet on a Mac `process.execPath` contains the full path to the executable within MacOS bundle. So you rather use this option to set the app path directly.
 - `options.updateDir` - (OPTIONAL) temporary directory where the downloaded package gets extracted. By default /tmp/nw-autoupdater
-- `options.logDir` - (OPTIONAL) directory of log file `nw-autoupdater.log`. By default `nw.App.dataPath`: Windows: %LOCALAPPDATA%/<project_name>; Linux: ~/.config/<project_name>; OSX: ~/Library/Application Support/<project_name>
+- `options.logPath` - (OPTIONAL) the full path to the log file. By default `nw.App.dataPath + "/nw-autoupdater.log"`: Windows: %LOCALAPPDATA%/<project_name>; Linux: ~/.config/<project_name>; OSX: ~/Library/Application Support/<project_name>
 - `options.verbose` - (OPTIONAL) when `true` swap script reports verbose in the log file. By default `false`
-- `options.swapScript` - (OPTIONAL) you custom swap script content
+- `options.swapScript` - (OPTIONAL) you custom swap script content (NOTE: available only for ScriptSwap strategy)
 
 ### Writing custom swap script
 
@@ -147,3 +155,74 @@ updater.on( "install", ( installFiles, totalFiles ) => {
 });
 ```
 
+
+## Extra Methods required for Strategy AppSwap
+
+### isSwapRequest
+Checks if the app launched for swap
+```
+const needsSwap = updater.isSwapRequest();
+```
+**Returns**: `boolean`
+
+### swap
+Backs up current version of the app and replaces it with the downloaded version
+```
+await updater.swap();
+```
+
+**Returns**: `Promise`
+
+### restart
+Restarts the updated app
+```
+await updater.restart();
+```
+
+**Returns**: `Promise`
+
+
+
+## Contributing
+
+`nw-autoupdater` welcomes maintainers. There is plenty of work to do. No big commitment required,
+if all you do is review a single Pull Request, you are a maintainer.
+
+
+### How to check changes
+
+```
+# Clone the git repo
+git clone git@github.com:dsheiko/nw-autoupdater.git
+
+# Navigate to the newly created directory
+cd nw-autoupdater
+
+# Switch the branch if needed
+# Make changes in the code
+# Bundle the package
+npm pack
+
+# You'will get a new file like `nw-autoupdater-1.1.0-beta.1.tgz`
+# Switch a client example
+cd example/client-strategy-script/
+
+# Install the updated package
+npm i ../../nw-autoupdater-1.1.0-beta.1.tgz
+
+# Package demo app
+npm run package
+
+# Extract demo app package in a temp directory
+unzip ~/Sites/nw-autoupdater/example/server/releases/nw-autoupdater-demo-linux-x64.zip -d /tmp/Sandbox/
+
+# Iterate version (to have newer one available from the release server)
+npm version patch
+
+# Do not forget to start release-server
+cd ../server/
+npm start
+
+# Now start the demo app from your temp /tmp/Sandbox/
+
+```

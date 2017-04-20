@@ -21,9 +21,11 @@ const IS_WIN = /^win/.test( process.platform );
 const EXEC_DIR = IS_OSX ?
   dirname( process.execPath.match(/^([^\0]+?\.app)\//)[1] ) : dirname( process.execPath );
 
-const UPDATE_DIR = join( os.tmpdir(), "nw-autoupdater" );
+const PKG_NAME = "nw-autoupdater";
+const LOG_FILE = `${PKG_NAME}.log`;
+const UPDATE_DIR = join( os.tmpdir(), PKG_NAME );
 const BACKUP_DIR = `${EXEC_DIR}.bak`;
-const LOG_DIR = nw.App.dataPath;
+const LOG_PATH = join( nw.App.dataPath, LOG_FILE );
 
 function getExecutable( name )
 {
@@ -48,4 +50,4 @@ exports.UPDATE_DIR = UPDATE_DIR;
 exports.BACKUP_DIR = BACKUP_DIR;
 exports.IS_OSX = IS_OSX;
 exports.swapFactory = swapFactory;
-exports.LOG_DIR = LOG_DIR;
+exports.LOG_PATH = LOG_PATH;
