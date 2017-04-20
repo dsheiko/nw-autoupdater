@@ -13,7 +13,7 @@ Library provides low-level API to control NW.js app auto-updates. This project c
 #### Strategy ScriptSwap
 ![Autoupdater in action](https://github.com/dsheiko/nw-autoupdater/raw/master/nw-autoupdater.gif)
 
-# What do we do to autoupdate ([see example](example/client/index.html))
+# What do we do to autoupdate (see [demo A](example/client-strategy-script/index.html) or [demo B](example/client-strategy-app/index.html))
 - `readRemoteManifest` reads manifest from the remote release server
 - `checkNewVersion( rManifest )` checks if the version in the remote manifest greater than one of the local manifest
 - If the remote manifest doesn't have newer version, skips the update flow
@@ -33,8 +33,8 @@ Library provides low-level API to control NW.js app auto-updates. This project c
 ## Distribution
 
 - Run release server (see [example](example/server/README.md))
-- Add to your client manifest ([package.json](example/client/package.json)) field `manifestUrl` pointing at release server
-- Package your app by using [nwjs-builder](https://github.com/evshiron/nwjs-builder) (see [example](example/client/README.md))
+- Add to your client manifest ([package.json](example/client-strategy-app/package.json)) field `manifestUrl` pointing at release server
+- Package your app by using [nwjs-builder](https://github.com/evshiron/nwjs-builder) (see [example](example/client-strategy-app/README.md))
 - Update the contents of `packages` field in release server manifest (e.g. by running  `node update.js`)
 - Update `version` field in release server manifest
 - Launch your app and observe it's auto-updating
