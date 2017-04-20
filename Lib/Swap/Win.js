@@ -26,7 +26,7 @@ xcopy %updateDir% %execDir% /e /i /h /c /y
 
   extractScript( homeDir )
   {
-    const content = this.getSwapScriptContent(),
+    const content = this.getScriptContent(),
           scriptPath = join( homeDir, "swap.bat" );
     fs.writeFileSync( scriptPath, content, "utf8" );
     this.scriptPath = scriptPath;
