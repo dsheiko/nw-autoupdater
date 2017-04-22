@@ -9,10 +9,11 @@ const { join  } = require( "path" ),
    * @returns {Promise}
    */
   async function restartToSwap(){
-    const { execDir, executable, updateDir, logPath } = this.options,
+    const { execDir, executable, updateDir, backupDir, logPath } = this.options,
           tpmUserData = join( nw.App.dataPath, "swap" ),
           app = join( updateDir, executable ),
-          args = [ `--user-data-dir=${tpmUserData}`, `--swap=${execDir}` ];
+          args = [ `--user-data-dir=${tpmUserData}`,
+            `--swap=${execDir}`, `--bak-dir=${backupDir}` ];
 
     if ( IS_OSX ) {
       await launch( "open", [ "-a", app, "--args", ...args ], updateDir, logPath );
@@ -20,6 +21,14 @@ const { join  } = require( "path" ),
       await launch( app, args, updateDir, logPath );
     }
     nw.App.quit();
+  }
+
+  function getBakDirFromArgv( argv ){
+    const raw = argv.find( arg => arg.startsWith( "--bak-dir=" ) );
+    if ( !raw ) {
+      return false;
+    }
+    return raw.substr( 10 );
   }
 
   /**
@@ -33,6 +42,7 @@ const { join  } = require( "path" ),
     }
 
     this.options.execDir = raw.substr( 7 );
+    this.options.backupDir = getBakDirFromArgv( this.argv ) || this.options.backupDir;
     return true;
   }
   /**
