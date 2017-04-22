@@ -40,10 +40,10 @@ esac
 done
 ` + ( swapScript ||
 `echo "rsync -a\${VERBOSE} --delete \${APP_PATH}/. \${BAK_PATH}/"
-rsync -a\${VERBOSE} --delete \${APP_PATH}/. \${BAK_PATH}/
+rsync -a\${VERBOSE} --delete "\${APP_PATH}/." "\${BAK_PATH}/"
 echo " "
 echo "rsync -a\${VERBOSE} --delete \${UPDATE_PATH}/. \${APP_PATH}/"
-rsync -a\${VERBOSE} --delete \${UPDATE_PATH}/. \${APP_PATH}/
+rsync -a\${VERBOSE} --delete "\${UPDATE_PATH}/." "\${APP_PATH}/"
 ` );
   }
 

@@ -16,11 +16,11 @@ SET backupDir=%~3
 SET runner=%~4
 SET verbose=%~5
 
-rmdir %backupDir% /s /q
-xcopy %execDir% %backupDir% /e /i /h /c /y
-xcopy %updateDir% %execDir% /e /i /h /c /y
+rmdir "%backupDir%" /s /q
+xcopy "%execDir%" "%backupDir%" /e /i /h /c /y
+xcopy "%updateDir%" "%execDir%" /e /i /h /c /y
 
-%runner%
+"%execDir%\%runner%"
 `;
   }
 
