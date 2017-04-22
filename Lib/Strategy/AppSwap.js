@@ -11,7 +11,7 @@ const { join  } = require( "path" ),
   async function restartToSwap(){
     const { execDir, executable, updateDir, logPath } = this.options,
           tpmUserData = join( nw.App.dataPath, "swap" ),
-          app = join( execDir, executable ),
+          app = join( updateDir, executable ),
           args = [ `--user-data-dir=${tpmUserData}`, `--swap=${execDir}` ];
 
     if ( IS_OSX ) {
@@ -58,9 +58,9 @@ const { join  } = require( "path" ),
           app = join( execDir, executable );
 
      if ( IS_OSX ) {
-      await launch( "open", [ "-a", app, "--args" ], updateDir, logPath );
+      await launch( "open", [ "-a", app, "--args" ], execDir, logPath );
     } else {
-      await launch( app, [], updateDir, logPath );
+      await launch( app, [], execDir, logPath );
     }
     nw.App.quit();
   }

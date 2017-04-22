@@ -20,10 +20,10 @@ function rtrim( dir )
  */
 async function copy( from, to, log ){
   return new Promise(( resolve, reject ) => {
-    fs.writeSync( log, `copy ${from} ${to}`, "utf-8" );
+    fs.writeSync( log, `copy "${from}" "${to}"\n`, "utf-8" );
     fs.copy( from, to, ( err ) => {
       if ( err ) {
-        fs.writeSync( log, `ERROR: ${err}`, "utf-8" );
+        fs.writeSync( log, `ERROR: ${err}\n`, "utf-8" );
         return reject( err );
       }
       resolve();
