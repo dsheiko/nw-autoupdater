@@ -1,0 +1,21 @@
+{
+  "name": "nw-autoupdater-demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "start": "nw .",
+    "postversion": "npm run package",
+    "package": "nwb nwbuild -v 0.21.3-sdk . -o ../server/releases --output-format=ZIP"
+  },
+  "manifestUrl": "http://127.0.0.1:8080/package.json",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nwjs-builder": "^1.14.0"
+  },
+  "dependencies": {
+    "nw-autoupdater": "*"
+  }
+}
