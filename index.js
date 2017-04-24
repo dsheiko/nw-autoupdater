@@ -50,7 +50,7 @@ class AutoUpdater extends EventEmitter {
 
     this.options.execDir = rtrim( this.options.execDir );
     this.options.executable = this.options.executable || getExecutable( manifest.name );
-
+    // Mixing up a chosen strategy
     Object.assign( this, this.options.strategy === "ScriptSwap" ? ScriptSwapStrategy : AppSwapStrategy );
 
   }
