@@ -20,7 +20,7 @@ rmdir "%backupDir%" /s /q
 xcopy "%execDir%" "%backupDir%" /e /i /h /c /y
 xcopy "%updateDir%" "%execDir%" /e /i /h /c /y
 
-"%execDir%\%runner%"
+"%execDir%\\%runner%"
 `;
   }
 
