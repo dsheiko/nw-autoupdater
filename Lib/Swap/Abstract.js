@@ -44,6 +44,9 @@ rsync -al\${VERBOSE} --delete "\${APP_PATH}/." "\${BAK_PATH}/"
 echo " "
 echo "rsync -al\${VERBOSE} --delete \${UPDATE_PATH}/. \${APP_PATH}/"
 rsync -al\${VERBOSE} --delete "\${UPDATE_PATH}/." "\${APP_PATH}/"
+echo " "
+echo "rm -rf \${UPDATE_PATH}"
+rm -rf "\${UPDATE_PATH}"
 ` );
   }
 

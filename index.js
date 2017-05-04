@@ -57,17 +57,6 @@ class AutoUpdater extends EventEmitter {
 
   }
   /**
-   * Cleanup temp folder updateDir
-   * @returns {Promise}
-   */
-  async cleanUp( remoteManifest ){
-    const release = remoteManifest.packages[ PLATFORM_FULL ];
-    if ( !release ) {
-        throw new Error( `No release matches the platfrom ${PLATFORM_FULL}` );
-    }
-    return await fs.removeSync(this.options.updateDir);
-  }
-  /**
    * Read package.json from the release server
    * @returns {Promise<JSON>}
    */

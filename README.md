@@ -117,18 +117,6 @@ const updateFile = await updater.download( rManifest, { debounceTime: 100 });
 
 **Returns**: `Promise<filepath: string>`
 
-
-### cleanUp
-Clean temp directory nw-autoupdater
-```
-await updater.cleanUp(rManifest);
-```
-**Params**
-- `rManifest` - manifest of the release server
-
-**Returns**: `Promise`
-
-
 ### unpack
 Unpack downloaded update
 ```
