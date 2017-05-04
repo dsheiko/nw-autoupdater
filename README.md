@@ -62,6 +62,7 @@ new AutoUpdate( manifest, options );
 - `options.logPath` - (OPTIONAL) the full path to the log file. By default `nw.App.dataPath + "/nw-autoupdater.log"`: Windows: %LOCALAPPDATA%/<project_name>; Linux: ~/.config/<project_name>; OSX: ~/Library/Application Support/<project_name>
 - `options.verbose` - (OPTIONAL) when `true` swap script reports verbose in the log file. By default `false`
 - `options.swapScript` - (OPTIONAL) you custom swap script content (NOTE: available only for ScriptSwap strategy)
+- `options.accumulativeBackup` - (OPTIONAL) when `true` for every backup creates a new folder. By default `false`
 
 ### Writing custom swap script
 
