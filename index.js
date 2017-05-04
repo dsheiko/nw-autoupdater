@@ -7,6 +7,7 @@ const EventEmitter = require( "events" ),
       unpackTarGz = require( "./Lib/unpackTarGz" ),
       unpackZip = require( "./Lib/unpackZip" ),
       debounce = require( "debounce" ),
+      fs = require( "fs-extra" ),
 
       { readJson, download }  = require( "./Lib/request" ),
       { launch, rtrim } = require( "./Lib/utils" ),
@@ -54,7 +55,17 @@ class AutoUpdater extends EventEmitter {
     Object.assign( this, this.options.strategy === "ScriptSwap" ? ScriptSwapStrategy : AppSwapStrategy );
 
   }
-
+  /**
+   * Cleanup temp folder updateDir
+   * @returns {Promise}
+   */
+  async cleanUp( remoteManifest ){
+    const release = remoteManifest.packages[ PLATFORM_FULL ];
+    if ( !release ) {
+        throw new Error( `No release matches the platfrom ${PLATFORM_FULL}` );
+    }
+    return await fs.removeSync(this.options.updateDir);
+  }
   /**
    * Read package.json from the release server
    * @returns {Promise<JSON>}
