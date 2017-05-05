@@ -48,7 +48,7 @@ class AutoUpdater extends EventEmitter {
     this.argv = nw.App.argv;
     this.remoteManifest = "";
     this.options = Object.assign( {}, DEFAULT_OPTIONS, options );
-    this.options.backupDir += this.accumulativeBackup ? `_${Math.floor(Date.now() / 1000)}` : ``;
+    this.options.backupDir += this.options.accumulativeBackup ? `_${Math.floor(Date.now() / 1000)}` : ``;
     this.options.execDir = rtrim( this.options.execDir );
     this.options.executable = this.options.executable || getExecutable( manifest.name );
     // Mixing up a chosen strategy

@@ -37,7 +37,7 @@
             output.innerHTML = `Installing...\n`;
             console.log( "install progress", Math.floor( installFiles / totalFiles * 100 ), "%" );
           });
-         
+
           const updateFile = await updater.download( rManifest );
           await updater.unpack( updateFile );
           alert( `The application will automatically restart to finish installing the update` );
