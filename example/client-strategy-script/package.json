@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nw .",
     "postversion": "npm run package",
-    "package": "nwb nwbuild -v 0.21.3-sdk . -o ../server/releases --output-format=ZIP"
+    "package": "nwb nwbuild -v 0.21.3-sdk . -o ../server/releases --output-format=ZIP --output-name={name}-r{version}-{target}"
   },
   "manifestUrl": "http://127.0.0.1:8080/package.json",
   "keywords": [],

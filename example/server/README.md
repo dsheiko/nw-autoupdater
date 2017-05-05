@@ -1,6 +1,6 @@
 # Release Server Example
 
-It's a static server that keeps manifest and last app releases. 
+It's a static server that keeps manifest and last app releases.
 Releases of nwjs app are built with 'nw-builder' (as example), the structure of builds is next:
 * macos - %APPNAME%.app (compressed *.app file for release);
 * win/linux - %FOLDER_NAME% with binary and other necessary files inside (compressed all files inside this folder for release);
@@ -23,7 +23,7 @@ Updater during update process will create backup of your current application, fo
     "mac64": {
       "url": "http://localhost:8080/releases/nw-autoupdater-demo-mac-x64.tar.gz",
       "size": 102680557
-    }    
+    }
   }
 }
 ```
@@ -34,8 +34,10 @@ Updater during update process will create backup of your current application, fo
 ```
 npm start
 ```
+Besides serving static files (releases) the server watches for changes in releases directory.
+When new file arrives, it tries automatically update `package.json`
 
-### Update `packages` field of the manifest based on actual content of `release1 directory
+### Update `packages` field of the manifest based on actual content of `release directory
 ```
 npm run update
 ```
