@@ -9,7 +9,7 @@ const EventEmitter = require( "events" ),
       debounce = require( "debounce" ),
 
       { readJson, download }  = require( "./Lib/request" ),
-      { launch, rtrim } = require( "./Lib/utils" ),
+      { launch, rtrim, remove } = require( "./Lib/utils" ),
       { PLATFORM_FULL, swapFactory,
         getExecutable, UPDATE_DIR, EXEC_DIR, BACKUP_DIR, LOG_PATH } = require( "./Lib/env" ),
 
@@ -95,6 +95,7 @@ class AutoUpdater extends EventEmitter {
       this.emit( "download", length, release.size );
     };
     try {
+      remove( this.options.updateDir );
       return await download( release.url, os.tmpdir(), debounce( onProgress, debounceTime ));
     } catch ( e ) {
       throw new Error( `Cannot download package from ${release.url}` );

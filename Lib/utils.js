@@ -9,7 +9,13 @@ function rtrim( dir )
 {
   return dir.replace( /\/$/, "" );
 }
-
+/**
+ * Remove a directory with content
+ * @param {string} dir
+ */
+async function remove( dir ){
+  fs.removeSync( dir );
+}
 
 /**
  * Copy dir
@@ -70,3 +76,4 @@ async function launch( runnerPath, argv, cwd, logPath ){
 exports.launch = launch;
 exports.rtrim = rtrim;
 exports.copy = copy;
+exports.remove = remove;

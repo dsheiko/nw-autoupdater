@@ -20,7 +20,6 @@ const { join  } = require( "path" ),
     } else {
       await launch( app, args, updateDir, logPath );
     }
-    fs.removeSync( updateDir );
     nw.App.quit();
   }
 

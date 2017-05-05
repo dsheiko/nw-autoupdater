@@ -1,5 +1,6 @@
 # NW-Autoupdater v1.1
 [![NPM](https://nodei.co/npm/nw-autoupdater.png)](https://nodei.co/npm/nw-autoupdater/)
+
 [![Join the chat at https://gitter.im/dsheiko/nw-autoupdater](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/dsheiko/nw-autoupdater?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Library provides low-level API to control NW.js app auto-updates. This project can be seen as a reincarnation of
