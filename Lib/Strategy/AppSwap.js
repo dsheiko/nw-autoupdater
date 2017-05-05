@@ -1,5 +1,5 @@
 const { join  } = require( "path" ),
-      fs = require( "fs" ),
+      fs = require( "fs-extra" ),
       { launch, copy } = require( "../utils" ),
       { swapFactory, IS_OSX } = require( "../env" );
 
@@ -20,6 +20,7 @@ const { join  } = require( "path" ),
     } else {
       await launch( app, args, updateDir, logPath );
     }
+    fs.removeSync( updateDir );
     nw.App.quit();
   }
 

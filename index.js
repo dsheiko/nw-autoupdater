@@ -7,7 +7,6 @@ const EventEmitter = require( "events" ),
       unpackTarGz = require( "./Lib/unpackTarGz" ),
       unpackZip = require( "./Lib/unpackZip" ),
       debounce = require( "debounce" ),
-      fs = require( "fs-extra" ),
 
       { readJson, download }  = require( "./Lib/request" ),
       { launch, rtrim } = require( "./Lib/utils" ),
