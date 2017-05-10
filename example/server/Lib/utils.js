@@ -1,5 +1,6 @@
 const fs = require( "fs" ),
       { join } = require( "path" ),
+      c = require( "chalk" ),
       HOST = "http://localhost:8080/releases/",
       MANIFEST_FILE = join( __dirname, "/../", "/package.json" ),
       RELEASES = join( __dirname, "/../", "/releases" ),
@@ -64,7 +65,7 @@ function updateManifest( host, version = null ){
         return console.error( err );
       }
       console.log( "package.json updated"
-        + ( version ? ` till version ${version}` : "" ) );
+        + ( version ? ` to version ${c.cyan( version )}` : "" ) );
     });
 
   });
