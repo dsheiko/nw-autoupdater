@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 1.1.1
+- Symlinks with absolute paths in temp folder on macOS https://github.com/dsheiko/nw-autoupdater/issues/6
+- New constructor option `accumulativeBackup`
+- example/server that watches for changes in directory releases and updates the manifest accordingly
+
 ## 1.1.0
 - Code refactored for better readability and maintainability
 - Added a new update strategy ScriptSwap - where the autoupdater doesn't start up NW.js application for the swap, but delegates this work for a Bash/Batch script. Thus we reduce the total update time.
