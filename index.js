@@ -14,7 +14,7 @@ const EventEmitter = require( "events" ),
         getExecutable, UPDATE_DIR, EXEC_DIR, BACKUP_DIR, LOG_PATH } = require( "./Lib/env" ),
 
       ERR_INVALID_REMOTE_MANIFEST = "Invalid manifest structure",
-      DEBOUNCE_TIME = 500,
+      DEBOUNCE_TIME = 100,
 
       DEFAULT_OPTIONS = {
         executable: null,
