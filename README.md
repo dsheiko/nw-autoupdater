@@ -68,6 +68,16 @@ new AutoUpdate( manifest, options );
 
 ### Writing custom swap script
 
+You can define with `options.swapScript` you own custom swap script:
+```
+ const updater = new AutoUpdater( require( "./package.json" ), {
+          strategy: "ScriptSwap",
+          swapScript: `
+BASH/BAT SCRIPT CONTENT
+`
+      });
+```
+
 By default on Linux/MacIO the following script is used:
 ```
 rsync -a\${VERBOSE} --delete \${APP_PATH}/. \${BAK_PATH}/
