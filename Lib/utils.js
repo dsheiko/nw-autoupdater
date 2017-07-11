@@ -65,7 +65,7 @@ async function launch( runnerPath, argv, cwd, logPath ){
 
       child.on( "error", ( e ) => {
         fs.writeSync( log, [ "ERROR:", e, "\r\n" ].join( " " ), "utf-8" );
-        reject( log );
+        reject( e );
       });
 
        child.unref();
