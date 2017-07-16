@@ -8,12 +8,12 @@ const { join  } = require( "path" ),
    * Restart and launch detached swap
    * @returns {Promise}
    */
-  async function restartToSwap(){
+  async function restartToSwap(extraArgs = []){
     const { execDir, executable, updateDir, backupDir, logPath } = this.options,
           tpmUserData = join( nw.App.dataPath, "swap" ),
           app = join( updateDir, executable ),
           args = [ `--user-data-dir=${tpmUserData}`,
-            `--swap=${execDir}`, `--bak-dir=${backupDir}` ];
+            `--swap=${execDir}`, `--bak-dir=${backupDir}` ].concat( extraArgs );
 
     if ( IS_OSX ) {
       await launch( "open", [ "-a", app, "--args", ...args ], updateDir, logPath );
@@ -63,12 +63,12 @@ const { join  } = require( "path" ),
    * REstart after swap
    * @returns {Promise}
    */
-  async function restart(){
+  async function restart(extraArgs = []){
     const { execDir, executable, updateDir, logPath } = this.options,
           app = join( execDir, executable );
 
      if ( IS_OSX ) {
-      await launch( "open", [ "-a", app, "--args" ], execDir, logPath );
+      await launch( "open", [ "-a", app, "--args" ].concat( extraArgs ), execDir, logPath );
     } else {
       await launch( app, [], execDir, logPath );
     }
