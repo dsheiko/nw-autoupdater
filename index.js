@@ -131,7 +131,7 @@ class AutoUpdater extends EventEmitter {
          try {
           await unpackZip( updateFile, updateDir, debounce( onProgress, debounceTime ) );
          } catch ( e ) {
-            throw new Error( `Cannot unpack .zip package ${updateFile}` );
+            throw new Error( `Cannot unpack .zip package ${updateFile}: ${e.message}` );
          }
          break;
       default:
