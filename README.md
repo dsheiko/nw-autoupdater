@@ -15,7 +15,7 @@ Library provides low-level API to control NW.js app auto-updates. This project c
 #### Strategy ScriptSwap
 ![Autoupdater in action](https://github.com/dsheiko/nw-autoupdater/raw/master/nw-autoupdater.gif)
 
-[Screencast: Running nw-autoupdater examples in the terminal on Ubuntu](https://www.youtube.com/watch?v=q0La7cgXMpg)
+:video_camera: [Screencast: Running nw-autoupdater examples in the terminal on Ubuntu](https://www.youtube.com/watch?v=q0La7cgXMpg)
 
 # What do we do to autoupdate (see [demo A](example/client-strategy-script/index.html) or [demo B](example/client-strategy-app/index.html))
 - `readRemoteManifest` reads manifest from the remote release server
