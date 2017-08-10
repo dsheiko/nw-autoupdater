@@ -10,7 +10,8 @@
   "version": "1.1.1",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel . -d dist --ignore node_modules --source-maps"
   },
   "manifestUrl": "http://127.0.0.1:8080/package.json",
   "author": "Dmitry Sheiko <me@dsheiko.com>",
@@ -22,5 +23,10 @@
     "decompress-zip": "^0.3.0",
     "fs-extra": "^2.1.2",
     "semver": "^5.3.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-preset-es2017": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1"
   }
 }
