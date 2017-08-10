@@ -10,7 +10,8 @@
   "version": "1.1.1",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel . -d dist --ignore node_modules --source-maps"
   },
   "manifestUrl": "http://127.0.0.1:8080/package.json",
   "author": "Dmitry Sheiko <me@dsheiko.com>",
