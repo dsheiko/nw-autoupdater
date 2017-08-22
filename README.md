@@ -246,23 +246,3 @@ npm start
 # Now start the demo app from your temp /tmp/Sandbox/
 
 ```
-
-<script type="application/ld+json">
-{
-  "@context": "http://schema.org",
-  "@type": "SoftwareApplication",
-  "name": "NW-Autoupdater",
-  "operatingSystem": "Web",
-  "applicationCategory": "http://schema.org/BusinessApplication",
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "5",
-    "ratingCount": "10"
-  },
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "USD"
-  }
-}
-</script>
