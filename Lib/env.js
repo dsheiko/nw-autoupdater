@@ -17,14 +17,18 @@ const IS_WIN = /^win/.test( process.platform );
  * UPDATE_DIR = /tmp/nw-autoupdate/*.*
  */
 
+if(IS_OSX) {
+  const OSX_APP_DIR = process.execPath.match(/^([^\0]+?\.app)\//)[1];
+}
+
 // Directory where the app executable resides
 const EXEC_DIR = IS_OSX ?
-  dirname( process.execPath.match(/^([^\0]+?\.app)\//)[1] ) : dirname( process.execPath );
+  dirname( OSX_APP_DIR ) : dirname( process.execPath );
 
 const PKG_NAME = "nw-autoupdater";
 const LOG_FILE = `${PKG_NAME}.log`;
 const UPDATE_DIR = join( os.tmpdir(), PKG_NAME );
-const BACKUP_DIR = `${EXEC_DIR}.bak`;
+const BACKUP_DIR = IS_OSX ? `${OSX_APP_DIR}.bak` : `${EXEC_DIR}.bak`;
 const LOG_PATH = join( nw.App.dataPath, LOG_FILE );
 
 function getExecutable( name )
