@@ -6,10 +6,10 @@ const { join  } = require( "path" ),
    * Restart and launch detached swap
    * @returns {Promise}
    */
-  async function restartToSwap(){
+  async function restartToSwap(extraArgs = []){
     const { updateDir, logPath } = this.options,
           swap = swapFactory( this.options ),
-          args = swap.getArgs();
+          args = swap.getArgs().concat( extraArgs );
 
     swap.extractScript( updateDir );
     await launch( swap.getRunner(), args, updateDir, logPath );

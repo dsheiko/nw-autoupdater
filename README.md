@@ -15,6 +15,8 @@ Library provides low-level API to control NW.js app auto-updates. This project c
 #### Strategy ScriptSwap
 ![Autoupdater in action](https://github.com/dsheiko/nw-autoupdater/raw/master/nw-autoupdater.gif)
 
+:video_camera: [Screencast: Running nw-autoupdater examples in the terminal on Ubuntu](https://www.youtube.com/watch?v=q0La7cgXMpg)
+
 # What do we do to autoupdate (see [demo A](example/client-strategy-script/index.html) or [demo B](example/client-strategy-app/index.html))
 - `readRemoteManifest` reads manifest from the remote release server
 - `checkNewVersion( rManifest )` checks if the version in the remote manifest greater than one of the local manifest
@@ -24,10 +26,10 @@ Library provides low-level API to control NW.js app auto-updates. This project c
 - `download( rManifest )` downloads the latest available release matching the host platform (according to the `packages` map of the remote manifest)
 - `unpack( updateFile )` unpacks the release archive (`zip` or `tar.gz`) in a temporary directory
 - Strategy AppSwap
-  - `restartToSwap()` closes the app and launches the downloaded release
+  - `restartToSwap( extraArgs )` closes the app and launches the downloaded release
   - `isSwapRequest()` - checks if we need to go the swap flow (while running in tmp and therefore having the initial app directory unlocked for writing)
   - `swap()` - backs up actual version and replaces it with the new one
-  - `restart()` - restarts the updated app from its original location
+  - `restart( extraArgs )` - restarts the updated app from its original location
 - Strategy ScriptSwap
   - `restartToSwap()` closes the app and launches the swap script, which launches the application when it's done
 
@@ -146,6 +148,9 @@ Close this version of app and start the downloaded one with --swap param
 await updater.restartToSwap();
 ```
 
+**Params**
+- `extraArgs` - (OPTIONAL) Extra arguments to be passed to the newly started app
+
 **Returns**: `Promise`
 
 
@@ -190,6 +195,9 @@ Restarts the updated app
 ```
 await updater.restart();
 ```
+
+**Params**
+- `extraArgs` - (OPTIONAL) Extra arguments to be passed to the newly started app
 
 **Returns**: `Promise`
 
