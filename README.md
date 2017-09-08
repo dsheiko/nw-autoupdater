@@ -247,5 +247,8 @@ npm start
 
 ```
 
+<hr />
 <a href="https://www.packtpub.com/web-development/cross-platform-desktop-application-development-electron-node-nwjs-and-react"><img align="left" src="book-cover.png"></a>
-A journey of learning how to build cross-platform desktop application from NW.js with pure JavaScript to Electron with React, Redux and TypeScript
+My book:
+<h2>Cross-platform Desktop Application Development: Electron, Node, NW.js, and React</h2>
+<p>I split the book in four tutorials, starting with basics and advancing progressively though more and more complex aspects. So the first part guides on creating a file-explorer application built with pure JavaScript and NW.js/Node.js. The second part is about creating a chat application with Electron, React and PhotonKit.The third part is about screen capturer application made with NW.js, React/Redux and Material UI. The last part guides on creating RSS aggregator application with Electron, React, Redux and TypeScript. </p>
