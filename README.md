@@ -238,3 +238,6 @@ npm start
 # Now start the demo app from your temp /tmp/Sandbox/
 
 ```
+
+<a href="https://www.packtpub.com/web-development/cross-platform-desktop-application-development-electron-node-nwjs-and-react"><img align="left" src="book-cover.png"></a>
+A journey of learning how to build cross-platform desktop application from NW.js with pure JavaScript to Electron with React, Redux and TypeScript
