@@ -142,7 +142,7 @@ class AutoUpdater extends EventEmitter {
                 }
                 break;
             default:
-                throw new Error("Release arhive of unsuported type");
+                throw new Error("Release archive of unsupported type");
                 break;
         }
 
