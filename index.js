@@ -4,7 +4,7 @@ const EventEmitter = require("events"),
     semver = require("semver"),
     os = require("os"),
     {lstatSync, existsSync} = require('fs'),
-    {join, basename, dirname} = require("path"),
+    {join, basename, dirname, parse} = require("path"),
     unpackTarGz = require("./Lib/unpackTarGz"),
     unpackZip = require("./Lib/unpackZip"),
     debounce = require("debounce"),
@@ -115,7 +115,6 @@ class AutoUpdater extends EventEmitter {
      * @returns {Promise<string>}
      */
     async unpack(updateFile, {debounceTime} = {debounceTime: DEBOUNCE_TIME}) {
-        let newPath = updateFile;
         const isZipRe = /\.zip$/i,
             isGzRe = /\.tar\.gz$/i,
             onProgress = (installFiles, totalFiles) => {
@@ -131,7 +130,6 @@ class AutoUpdater extends EventEmitter {
             case isGzRe.test(updateFile):
                 try {
                     await unpackTarGz(updateFile, updateDir, debounce(onProgress, debounceTime));
-                    updateFile = updateFile.replace(isGzRe, '');
                 } catch (e) {
                     throw new Error(`Cannot unpack .tar.gz package ${updateFile}`);
                 }
@@ -139,7 +137,6 @@ class AutoUpdater extends EventEmitter {
             case isZipRe.test(updateFile):
                 try {
                     await unpackZip(updateFile, updateDir, debounce(onProgress, debounceTime));
-                    updateFile = updateFile.replace(isZipRe, '');
                 } catch (e) {
                     throw new Error(`Cannot unpack .zip package ${updateFile}: ${e.message}`);
                 }
@@ -150,7 +147,7 @@ class AutoUpdater extends EventEmitter {
         }
 
         //If extract zip in new folder
-        newPath = join(updateDir, updateDir)
+        let newPath = join(updateDir, parse(updateFile).name);
         if (existsSync(newPath)) {
             if (lstatSync(newPath).isDirectory()) {
                 this.options.updateDir = newPath;
