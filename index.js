@@ -3,7 +3,8 @@ const EventEmitter = require( "events" ),
       ScriptSwapStrategy = require( "./Lib/Strategy/ScriptSwap" ),
       semver = require( "semver" ),
       os = require( "os" ),
-      { join, basename, dirname } = require( "path" ),
+      {lstatSync, existsSync} = require('fs'),
+      { join, basename, dirname, parse } = require( "path" ),
       unpackTarGz = require( "./Lib/unpackTarGz" ),
       unpackZip = require( "./Lib/unpackZip" ),
       debounce = require( "debounce" ),
@@ -135,9 +136,18 @@ class AutoUpdater extends EventEmitter {
          }
          break;
       default:
-         throw new Error( "Release arhive of unsuported type" );
+         throw new Error( "Release archive of unsupported type" );
          break;
     }
+
+      //If extract zip in new folder
+      let newPath = join(updateDir, parse(updateFile).name);
+      if (existsSync(newPath)) {
+          if (lstatSync(newPath).isDirectory()) {
+              this.options.updateDir = newPath;
+          }
+      }
+
     return updateDir;
   }
 
