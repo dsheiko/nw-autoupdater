@@ -26,6 +26,18 @@ function request( uri ){
    return driver.get( uri, ( res ) => {
       const statusCode = res.statusCode;
       let error = false;
+      
+      // handle redirect
+      if (statusCode > 300 && statusCode < 400 && res.headers.location) {
+        const redirectUri = res.headers.location;
+        res.resume();
+        return request(redirectUri)
+          .then(
+            (res) => {resolve(res)}, 
+            (e) => {reject(e)}
+          );
+      }
+    
       if ( statusCode !== 200 ) {
         error = new Error( `Request Failed (${uri}).\n` +
                            `Status Code: ${statusCode}` );
