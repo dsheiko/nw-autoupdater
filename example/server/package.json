@@ -3,12 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
-  "packages": {
-    "mac64": {
-      "url": "http://localhost:8080/releases/nw-autoupdater-demo-r1.0.2-osx-x64.zip",
-      "size": 65578
-    }
-  },
+  "packages": {},
   "scripts": {
     "start": "node server.js",
     "update": "node update.js"

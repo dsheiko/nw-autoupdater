@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.1.4
+- handle redirect status codes to make it work with the github release assets for example
+
 ## 1.1.1
 - Symlinks with absolute paths in temp folder on macOS https://github.com/dsheiko/nw-autoupdater/issues/6
 - New constructor option `accumulativeBackup`
