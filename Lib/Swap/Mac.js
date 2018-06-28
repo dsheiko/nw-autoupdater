@@ -14,7 +14,7 @@ class  SwapMac extends SwapAbstract {
 open -a "\${APP_PATH}/\${RUNNER}"`,
         scriptPath = join( homeDir, "swap.sh" );
     fs.writeFileSync( scriptPath, content, "utf8" );
-    fs.chmod( scriptPath, 511 ); // 755
+    fs.chmodSync( scriptPath, 511 ); // 755
     this.scriptPath = scriptPath;
   }
 
