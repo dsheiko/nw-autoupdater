@@ -15,13 +15,13 @@ SET updateDir=%~2
 SET backupDir=%~3
 SET runner=%~4
 SET verbose=%~5
-
-rmdir "%backupDir%" /s /q
-xcopy "%execDir%" "%backupDir%" /e /i /h /c /y
-xcopy "%updateDir%" "%execDir%" /e /i /h /c /y
+` + (this.options.swapScript ||
+`rmdir "%backupDir%" /s /q
+robocopy "%execDir%" "%backupDir%" /mir
+robocopy "%updateDir%" "%execDir%" /mir
 
 "%execDir%\\%runner%"
-`;
+`);
   }
 
   extractScript( homeDir )
