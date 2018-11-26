@@ -1,7 +1,7 @@
 # NW-Autoupdater v1.1
 [![NPM](https://nodei.co/npm/nw-autoupdater.png)](https://nodei.co/npm/nw-autoupdater/)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdsheiko%2Fnw-autoupdater.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdsheiko%2Fnw-autoupdater?ref=badge_shield)
 
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdsheiko%2Fnw-autoupdater.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdsheiko%2Fnw-autoupdater?ref=badge_shield)
 [![Join the chat at https://gitter.im/dsheiko/nw-autoupdater](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/dsheiko/nw-autoupdater?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Library provides low-level API to control NW.js app auto-updates. This project can be seen as a reincarnation of
