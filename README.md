@@ -1,5 +1,6 @@
 # NW-Autoupdater v1.1
 [![NPM](https://nodei.co/npm/nw-autoupdater.png)](https://nodei.co/npm/nw-autoupdater/)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdsheiko%2Fnw-autoupdater.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdsheiko%2Fnw-autoupdater?ref=badge_shield)
 
 [![Join the chat at https://gitter.im/dsheiko/nw-autoupdater](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/dsheiko/nw-autoupdater?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
@@ -252,3 +253,6 @@ npm start
 My book:
 <h4>Cross-platform Desktop Application Development: Electron, Node, NW.js, and React</h4>
 <p><i>I split the book in four tutorials, starting with basics and advancing progressively though more and more complex aspects. So the first part guides on creating a file-explorer built with pure JavaScript and NW.js/Node.js. The second part is about creating a chat with Electron, React and PhotonKit. The third part is about screen capturer made with NW.js, React/Redux and Material UI. The last part guides on creating RSS aggregator with Electron, React, Redux and TypeScript. </i></p>
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdsheiko%2Fnw-autoupdater.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdsheiko%2Fnw-autoupdater?ref=badge_large)
