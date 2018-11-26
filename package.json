@@ -15,7 +15,7 @@
   },
   "manifestUrl": "http://127.0.0.1:8080/package.json",
   "author": "Dmitry Sheiko <me@dsheiko.com>",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "debounce": "^1.0.0",
     "decompress": "^4.0.0",
