@@ -70,7 +70,7 @@ const { join  } = require( "path" ),
      if ( IS_OSX ) {
       await launch( "open", [ "-a", app, "--args" ].concat( extraArgs ), execDir, logPath );
     } else {
-      await launch( app, [], execDir, logPath );
+      await launch(app, [].concat(extraArgs), execDir, logPath);
     }
     nw.App.quit();
   }
