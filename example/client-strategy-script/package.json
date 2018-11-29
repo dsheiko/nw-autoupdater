@@ -16,6 +16,6 @@
     "nwjs-builder": "^1.14.0"
   },
   "dependencies": {
-    "nw-autoupdater": "*"
+    "nw-autoupdater": "file:../../nw-autoupdater-1.1.7.tgz"
   }
 }

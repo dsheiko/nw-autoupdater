@@ -224,27 +224,47 @@ cd nw-autoupdater
 # Bundle the package
 npm pack
 
-# You'will get a new file like `nw-autoupdater-1.1.0-beta.1.tgz`
+# You'will get a new file like `nw-autoupdater-1.1.7.tgz`
 # Switch a client example
 cd example/client-strategy-script/
 
 # Install the updated package
-npm i ../../nw-autoupdater-1.1.0-beta.1.tgz
+npm i ../../nw-autoupdater-1.1.7.tgz
 
 # Package demo app
 npm run package
 
 # Extract demo app package in a temp directory
-unzip ~/Sites/nw-autoupdater/example/server/releases/nw-autoupdater-demo-linux-x64.zip -d /tmp/Sandbox/
+unzip ../server/releases/nw-autoupdater-demo-r1.0.0-linux-x64.zip -d /tmp/Sandbox/
 
-# Iterate version (to have newer one available from the release server)
-npm version patch
-
-# Do not forget to start release-server
+# Switch to release server example
 cd ../server/
+# Make sure dependencies up to date
+npm i
+# Update releases manifest
+npm run update
+# Start the server
 npm start
 
 # Now start the demo app from your temp /tmp/Sandbox/
+/tmp/Sandbox/nw-autoupdater-demo
+
+# It says:
+#  Application ver. 1.0.0
+#  App is up to date...
+
+# Switch back to demo app and update its version
+cd ../client-strategy-script/
+npm version patch
+npm run package
+
+# Back to the server to update manifest
+cd ../server/
+npm run update
+npm start
+
+# When starting the built app it updates
+/tmp/Sandbox/nw-autoupdater-demo
 
 ```
 

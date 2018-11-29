@@ -1,9 +1,14 @@
 {
   "name": "release-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "server.js",
-  "packages": {},
+  "packages": {
+    "linux64": {
+      "url": "http://localhost:8080/releases/nw-autoupdater-demo-r1.0.1-linux-x64.zip",
+      "size": 103032579
+    }
+  },
   "scripts": {
     "start": "node server.js",
     "update": "node update.js"

@@ -41,11 +41,16 @@ function getPlatform( file ){
  */
 function updateManifest( host, version = null ){
   fs.readdir( RELEASES, ( err, files ) => {
+    let lastReleaseFile;
     if ( err ) {
       return console.error( err );
     }
     manifest.packages = {};
-    files.forEach( file => {
+
+    files
+      .filter( file => file !== "README.md" )
+      .sort()
+      .forEach( file => {
       const platform =  getPlatform( file );
       if ( !platform ) {
         return;
@@ -54,7 +59,12 @@ function updateManifest( host, version = null ){
         url: host + file,
         size: fs.statSync( join( RELEASES, file ) ).size
       };
+      lastReleaseFile = file;
     });
+
+    if ( !version ) {
+      version = getVersion( lastReleaseFile );
+    }
 
     if ( version ) {
       manifest.version = version;
