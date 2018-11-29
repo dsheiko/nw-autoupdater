@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>!!Autoupdater Example (Script Strategy)</title>
+    <title>Autoupdater Example (Script Strategy)</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
@@ -15,12 +15,10 @@
             output =  document.querySelector( "#output" );
 
       async function main(){
-        console.log(">>>>>>>>>>>>>>>>>>>>>>>>");
         try {
 
           // Download/unpack update if any available
           const rManifest = await updater.readRemoteManifest();
-          console.log({rManifest});
           const needsUpdate = await updater.checkNewVersion( rManifest );
           if ( !needsUpdate ) {
             output.innerHTML += `\nApp is up to date...`;
