@@ -1,6 +1,6 @@
 const { join  } = require( "path" ),
       fs = require( "fs-extra" ),
-      { launch, copy } = require( "../utils" ),
+      { launch, copy, remove } = require( "../utils" ),
       { swapFactory, IS_OSX } = require( "../env" );
 
 
@@ -51,6 +51,9 @@ const { join  } = require( "path" ),
   async function swap(){
     const { executable, backupDir, execDir, updateDir, logPath } = this.options,
           log = fs.openSync( logPath, "a" );
+    if (fs.existsSync( backupDir )) {
+        await remove( backupDir );
+    }
     if ( IS_OSX ) {
         await copy( join( execDir, executable ), backupDir, log );
         await copy( updateDir, execDir, log );
