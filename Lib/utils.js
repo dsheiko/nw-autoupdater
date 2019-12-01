@@ -48,25 +48,14 @@ async function copy( from, to, log ){
 async function launch( runnerPath, argv, cwd, logPath ){
    return new Promise(( resolve, reject ) => {
       const log = fs.openSync( logPath, "a" ),
+      err = fs.openSync( logPath, "a" ),
 
       child = spawn( runnerPath, argv, {
          timeout: 4000,
          detached: true,
-         cwd
+         cwd,
+         stdio: [ 'ignore', log, err ]
        });
-
-      child.stdout.on( "data", ( data ) => {
-         fs.writeSync( log, `${data}`, "utf-8" );
-      });
-
-      child.stderr.on( "data", ( data ) => {
-        fs.writeSync( log, `ERROR: ${data}`, "utf-8" );
-      });
-
-      child.on( "error", ( e ) => {
-        fs.writeSync( log, [ "ERROR:", e, "\r\n" ].join( " " ), "utf-8" );
-        reject( e );
-      });
 
        child.unref();
        setTimeout( resolve, 500 );
