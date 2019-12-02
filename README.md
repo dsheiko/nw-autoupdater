@@ -224,12 +224,12 @@ cd nw-autoupdater
 # Bundle the package
 npm pack
 
-# You'will get a new file like `nw-autoupdater-1.1.7.tgz`
+# You'will get a new file like `nw-autoupdater-1.1.11.tgz`
 # Switch a client example
 cd example/client-strategy-script/
 
 # Install the updated package
-npm i ../../nw-autoupdater-1.1.7.tgz
+npm i ../../nw-autoupdater-1.1.11.tgz
 
 # Package demo app
 npm run package
