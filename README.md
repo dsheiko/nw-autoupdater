@@ -1,4 +1,10 @@
 # NW-Autoupdater v1.1
+
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
+
+> WARNING - THIS PROJECT IS NO LONGER MAINTAINED!!!
+
+
 [![NPM](https://nodei.co/npm/nw-autoupdater.png)](https://nodei.co/npm/nw-autoupdater/)
 
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdsheiko%2Fnw-autoupdater.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdsheiko%2Fnw-autoupdater?ref=badge_shield)
